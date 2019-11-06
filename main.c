@@ -62,6 +62,12 @@ int main(int argc, char *argv[]) {
 				inv[inc] = strtok(NULL, delimiters);
 			}
 		} while (inc < 1);
+
+		//convert user input into lower case for case in-sensitive matching
+		/*for (int i = 0; i < strlen(inv); i++)
+		{
+
+		}*/
 		
 		/* invoke the chatbot */
 		done = chatbot_main(inc, inv, output, MAX_RESPONSE);

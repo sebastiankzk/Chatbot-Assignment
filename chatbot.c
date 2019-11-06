@@ -43,6 +43,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "chat1002.h"
+#include <ctype.h>
+#include <time.h>
  
  
 /*
@@ -307,10 +309,37 @@ int chatbot_do_save(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_smalltalk(const char *intent) {
-	
+
+
+
+	if (strcmp(intent,"hello") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "hi") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "good") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "how") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "hey") == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+
 	/* to be implemented */
 	
-	return 0;
+	
  
 }
 
@@ -328,8 +357,45 @@ int chatbot_is_smalltalk(const char *intent) {
 int chatbot_do_smalltalk(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
+	if (strcmp(inv[0],"hello") == 0)
+	{
+		snprintf(response, n, "Hello!!!");
+		return 0;
+	}
+
+	else if (strcmp(inv[0], "good") == 0)
+	{
+		if (strcmp(inv[1], "morning") == 0)
+		{
+			snprintf(response, n, "Good Morning, have a great day ahead.");
+			return 0;
+		}
+		else if (strcmp(inv[1], "afternoon") == 0)
+		{
+			snprintf(response, n, "Good Afternoon, remember to take a break once in awhile.");
+			return 0;
+		}
+		else if (strcmp(inv[1], "evening") == 0)
+		{
+			snprintf(response, n, "Good Evening, great work today!");
+			return 0;
+		}
+		return 0;
+	}
+
+	else if (strcmp(inv[0],"goodbye"))
+	{
+		snprintf(response, n, "All right, see you then.");
+		return 1;
+	}
+
+	else
+	{
+		snprintf(response, n, "I don't understand \"%s\".", inv[0]);
+		return 1;
+	}
 	
-	return 0;
+	
 	
 }
   
