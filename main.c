@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 	chatbot_do_reset(1, inv, output, MAX_RESPONSE);
 	
 	/* print a welcome message */
-	printf("%s: Hello, I'm %s.\n", chatbot_botname(), chatbot_botname());
+	printf("%s: Hello, I'm %s. You can ask me anything.\n", chatbot_botname(), chatbot_botname());
 	
 	/* main command loop */
 	do {
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 			/* read the line */
 			printf("%s: ", chatbot_username());
 			fgets(input, MAX_INPUT, stdin);
-			
+
 			/* split it into words */
 			inc = 0;
 			inv[inc] = strtok(input, delimiters);
@@ -64,10 +64,12 @@ int main(int argc, char *argv[]) {
 		} while (inc < 1);
 
 		//convert user input into lower case for case in-sensitive matching
-		/*for (int i = 0; i < strlen(inv); i++)
-		{
+		//for (int i = 0; i < strlen(inv); i++)
+		//{
+		//	inv[i] = toupper(inv[i]);
+		//}
 
-		}*/
+
 		
 		/* invoke the chatbot */
 		done = chatbot_main(inc, inv, output, MAX_RESPONSE);

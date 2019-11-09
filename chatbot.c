@@ -45,7 +45,7 @@
 #include "chat1002.h"
 #include <ctype.h>
 #include <time.h>
- 
+#include <stdbool.h> 
  
 /*
  * Get the name of the chatbot.
@@ -54,7 +54,7 @@
  */
 const char *chatbot_botname() {
 
-	return "Chatbot";
+	return "Jamie";
 	
 }
 
@@ -195,6 +195,18 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 int chatbot_is_question(const char *intent) {
 	
 	/* to be implemented */
+	if (strcmp(intent, "who") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "what") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "where") == 0)
+	{
+		return 1;
+	}
 	
 	return 0;
 	
@@ -216,6 +228,95 @@ int chatbot_is_question(const char *intent) {
  */
 int chatbot_do_question(int inc, char *inv[], char *response, int n) {
 	
+	const char skippedwords[4][5] = { "is", "are", "was", "were" };
+	//bool skip = 0;
+	int intent = 0;
+	int startentity = 1;
+
+	// Check if 2nd word is a filler word
+	for (int i = 0; i < inc; i++)
+	{
+		if (strcmp(skippedwords + i, inv[1]) == 0)
+		{
+			//skip = 1; 
+			startentity++;
+			break;
+		}
+	}
+
+	if (startentity == 5)
+	{
+
+	}
+	else if (startentity == 6)
+	{
+
+	}
+
+	// Skip 2nd word
+	//if (skip == 1)
+	//{
+	//	startentity++;
+	//}
+
+	if (strcmp(inv[intent], "who") == 0)
+	{
+		if (strcmp(inv[2], "frank") == 0)
+		{
+			snprintf(response, n, "Frank is a lectuer at SIT.");
+			return 0;
+		}
+		else if (strcmp(inv[startentity], "karin") == 0)
+		{
+			snprintf(response, n, "Karin is a lectuer at SIT.");
+			return 0;
+		}
+		else if (strcmp(inv[startentity], "steven") == 0)
+		{
+			snprintf(response, n, "Steven is a lectuer at SIT.");
+			return 0;
+		}
+	}
+	else if (strcmp(inv[intent], "what") == 0)
+	{
+		if (strcmp(inv[startentity], "frank") == 0)
+		{
+			snprintf(response, n, "Frank is a person.");
+			return 0;
+		}
+		else if (strcmp(inv[startentity], "karin") == 0)
+		{
+			snprintf(response, n, "Karin is a person.");
+			return 0;
+		}
+		else if (strcmp(inv[startentity], "steven") == 0)
+		{
+			snprintf(response, n, "Steven is a person.");
+			return 0;
+		}
+	}
+	else if (strcmp(inv[intent], "where") == 0)
+	{
+		if (strcmp(inv[startentity], "frank") == 0)
+		{
+			snprintf(response, n, "Frank should be at SIT.");
+			return 0;
+		}
+		else if (strcmp(inv[startentity], "karin") == 0)
+		{
+			snprintf(response, n, "Karin should be at SIT.");
+			return 0;
+		}
+		else if (strcmp(inv[startentity], "steven") == 0)
+		{
+			snprintf(response, n, "Steven should be at SIT.");
+			return 0;
+		}
+	}
+
+	//snprintf(response, n, "I don't understand what you said");
+	snprintf(response, n, "I don't know \"%s\".", inv[startentity]);
+
 	/* to be implemented */
 	 
 	return 0;
