@@ -22,3 +22,9 @@
 1002_Chatbot_Project/Debug/main.obj
 1002_Chatbot_Project/Debug/vc142.idb
 1002_Chatbot_Project/Debug/vc142.pdb
+*.log
+*.tlog
+*.lastbuildstate
+*.ipch
+*.ilk
+*.exe
