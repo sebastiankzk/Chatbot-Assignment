@@ -75,8 +75,25 @@ int knowledge_put(const char *intent, const char *entity, const char *response) 
 int knowledge_read(FILE *f) {
 	
 	/* to be implemented */
+	char buff[255];
 	
+	while (fgets(buff, 255, (FILE*)f) != NULL) {
+
+			int len = strlen(buff) - 2; // minus 2 as every line contains '\0' and '\n'
+
+			/* check for intent brackets -> [ ] */
+			if (buff[0] == '[' && buff[len] == ']') {
+				printf("Line is intent: ");
+				printf("%s\n", buff);
+			}
+			else {
+				printf("Line is entity: ");
+				printf("%s\n", buff);
+			}
+	}
+
 	return 0;
+
 }
 
 
