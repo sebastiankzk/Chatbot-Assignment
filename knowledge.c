@@ -17,6 +17,16 @@
 #include <string.h>
 #include "chat1002.h"
 
+/* knowledge base of 5W 1H */
+struct knowledge_base {
+	char *who[255][2]; // declare max entity first cos not sure yet
+	char *where[255][2];
+	char *what[255][2];
+	char *when[255][2];
+	char *why[255][2];
+	char *how[255][2];
+} knowledge;
+
 /*
  * Get the response to a question.
  *
@@ -76,23 +86,51 @@ int knowledge_read(FILE *f) {
 	
 	/* to be implemented */
 	char buff[255];
-	
+	int intelligence = 0;
+
 	while (fgets(buff, 255, (FILE*)f) != NULL) {
 
-			int len = strlen(buff) - 2; // minus 2 as every line contains '\0' and '\n'
+		/* get true length of string */
+		int len = strlen(buff) - 1;
+		buff[len] = '\0';
+		
 
-			/* check for intent brackets -> [ ] */
-			if (buff[0] == '[' && buff[len] == ']') {
-				printf("Line is intent: ");
-				printf("%s\n", buff);
+		/* check for intent brackets -> [ ] */
+		if (buff[0] == '[' && buff[len-1] == ']')
+		{
+			printf("%d ", strlen(buff));
+			if (strcmp(buff, "[who]") == 0) {
+				printf("who "); // test print
 			}
-			else {
-				printf("Line is entity: ");
-				printf("%s\n", buff);
+			else if (strcmp(buff, "[what]") == 0) {
+				printf("what "); // test print
 			}
+			else if (strcmp(buff, "[when]") == 0) {
+				printf("when "); // test print
+			}
+			else if (strcmp(buff, "[where]") == 0) {
+				printf("where "); // test print
+			}
+			else if (strcmp(buff, "[why]") == 0) {
+				printf("why "); // test print
+			}
+			else if (strcmp(buff, "[how]") == 0) {
+				printf("how "); // test print
+			}
+
+			printf("%s\n", buff);
+
+		}
+		else if (isalpha(buff[0]))
+		{
+			printf("%d ", strlen(buff));
+			printf("%s\n", buff);
+			intelligence += 1;
+		}
+		//printf("%d\n", strcmp(buff, "[who]"));
 	}
 
-	return 0;
+	return intelligence;
 
 }
 

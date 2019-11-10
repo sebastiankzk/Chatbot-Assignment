@@ -56,4 +56,7 @@ void knowledge_reset();
 int knowledge_read(FILE *f);
 void knowledge_write(FILE *f);
 
+/* for knowledge base from knowledge.c */
+struct knowledge;
+
 #endif
