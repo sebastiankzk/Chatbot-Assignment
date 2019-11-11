@@ -18,7 +18,7 @@
 #include "chat1002.h"
 
 /* knowledge base of 5W 1H */
-char* knowledge[255][3];
+char *knowledge[255][3];
 
 /*
  * Get the response to a question.
@@ -82,11 +82,13 @@ int knowledge_read(FILE *f) {
 	int intelligence = 0;
 	char current_intent[MAX_INTENT];
 
+
 	while (fgets(buff, 255, (FILE*)f) != NULL) {
 
 		/* get true length of string */
 		int len = strlen(buff) - 1;
 		buff[len] = '\0';
+		
 		
 
 		/* check for intent brackets -> [ ] */
@@ -94,7 +96,6 @@ int knowledge_read(FILE *f) {
 		{
 			//printf("%d ", strlen(buff));
 			if (strcmp(buff, "[who]") == 0) {
-				
 				strcpy(current_intent, "who");
 				printf("%s ", current_intent); // test print
 			}
@@ -124,12 +125,36 @@ int knowledge_read(FILE *f) {
 		}
 		else if (isalpha(buff[0]))
 		{
-			printf("%d ", strlen(buff));
+			//printf("%d ", strlen(buff));
 			printf("%s\n", buff);
+
+			//splitted = strtok(buff, '=');
+
+			//printf("%s\n", splitted[0]);
+			//printf("%s\n", splitted[1]);
+			//knowledge[intelligence][0] = current_intent;
+			//strcpy(knowledge[intelligence][0], current_intent);
+			//strcpy(knowledge[intelligence][1], splitted[0]);
+			//strcpy(knowledge[intelligence][2], splitted[1]);
+			//knowledge[intelligence][1] = splitted[0];
+			//knowledge[intelligence][2] = splitted[1];
+
 			intelligence += 1;
 		}
-		//printf("%d\n", strcmp(buff, "[who]"));
+		
 	}
+
+
+	//int i = 0;
+	//while (knowledge) {
+	/*for(int i=0; i< 13; i++) {
+		for (int j = 0; j < 3; j++) {
+			printf("%s ", knowledge[i][j]);
+		}
+		printf("\n");
+	}	*/
+	
+	//}
 
 	return intelligence;
 
