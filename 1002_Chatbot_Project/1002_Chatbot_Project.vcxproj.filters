@@ -31,7 +31,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\sample.ini">
+    <None Include="..\ICT1002_Group Project Assignment_AY19_T1_Sample.ini">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

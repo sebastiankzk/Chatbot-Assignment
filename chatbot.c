@@ -195,15 +195,17 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	//fp = fopen("ICT1002_Group Project Assignment_AY19_T1_Sample.ini", "r");
 	int botintel = 0; // to store how many entity responses loaded from ini file
 
-	FILE* fp = fopen(inv[1], "r");
+	FILE* fp;
+	fp = fopen("C:/Users/Yong Quan/Desktop/test.ini", "r");
+
 	if (fp != NULL) {
-		printf("%s", inv[1]);
 		botintel = knowledge_read(fp);
 		fclose(fp);
 	}
 
 	/* test ini file has 11 lines of entity responses */
-	snprintf(response, n, "Read %d responses from %s.", botintel, inv[1]);
+	snprintf(response, n, "Read %d responses from %s.", botintel, "sample.ini"); // hardcoded values first, original
+	snprintf(response, n, "\nStrength: 0\nDexterity: 0\nIntelligence: %d\nLuck: 0\n", botintel); // tweaked
 
 	return 0;
 	 
