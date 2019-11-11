@@ -11,11 +11,14 @@
  *
  * You may add helper functions as necessary.
  */
- 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "chat1002.h"
+
+ /* knowledge base of 5W 1H */
+char* knowledge[255];
 
 /*
  * Get the response to a question.
@@ -31,12 +34,12 @@
  *   KB_NOTFOUND, if no response could be found
  *   KB_INVALID, if 'intent' is not a recognised question word
  */
-int knowledge_get(const char *intent, const char *entity, char *response, int n) {
-	
+int knowledge_get(const char* intent, const char* entity, char* response, int n) {
+
 	/* to be implemented */
-	
+
 	return KB_NOTFOUND;
-	
+
 }
 
 
@@ -55,12 +58,12 @@ int knowledge_get(const char *intent, const char *entity, char *response, int n)
  *   KB_NOMEM, if there was a memory allocation failure
  *   KB_INVALID, if the intent is not a valid question word
  */
-int knowledge_put(const char *intent, const char *entity, const char *response) {
-	
+int knowledge_put(const char* intent, const char* entity, const char* response) {
+
 	/* to be implemented */
-	
+
 	return KB_INVALID;
-	
+
 }
 
 
@@ -72,11 +75,77 @@ int knowledge_put(const char *intent, const char *entity, const char *response) 
  *
  * Returns: the number of entity/response pairs successful read from the file
  */
-int knowledge_read(FILE *f) {
-	
+int knowledge_read(FILE* f) {
+
 	/* to be implemented */
-	
-	return 0;
+	char buff[255];
+	int intelligence = 0;
+	char current_intent[MAX_INTENT];
+
+
+	while (fgets(buff, 255, (FILE*)f) != NULL) {
+
+		/* get true length of string */
+		int len = strlen(buff) - 1;
+		buff[len] = '\0';
+
+
+
+		/* check for intent brackets -> [ ] */
+		if (buff[0] == '[' && buff[len - 1] == ']')
+		{
+			//printf("%d ", strlen(buff));
+			if (strcmp(buff, "[who]") == 0) {
+				strcpy(current_intent, "who");
+				printf("%s ", current_intent); // test print
+			}
+			else if (strcmp(buff, "[what]") == 0) {
+				strcpy(current_intent, "what");
+				printf("%s ", current_intent); // test print
+			}
+			else if (strcmp(buff, "[when]") == 0) {
+				strcpy(current_intent, "when");
+				printf("%s ", current_intent); // test print
+			}
+			else if (strcmp(buff, "[where]") == 0) {
+				strcpy(current_intent, "where");
+				printf("%s ", current_intent); // test print
+			}
+			else if (strcmp(buff, "[why]") == 0) {
+				strcpy(current_intent, "why");
+				printf("%s ", current_intent); // test print
+			}
+			else if (strcmp(buff, "[how]") == 0) {
+				strcpy(current_intent, "how");
+				printf("%s ", current_intent); // test print
+			}
+
+			printf("%s\n", buff);
+
+		}
+		else if (isalpha(buff[0]))
+		{
+			printf("%s\n", buff);
+
+			intelligence += 1;
+		}
+
+	}
+
+
+	//int i = 0;
+	//while (knowledge) {
+	/*for(int i=0; i< 13; i++) {
+		for (int j = 0; j < 3; j++) {
+			printf("%s ", knowledge[i][j]);
+		}
+		printf("\n");
+	}	*/
+
+	//}
+
+	return intelligence;
+
 }
 
 
@@ -84,9 +153,9 @@ int knowledge_read(FILE *f) {
  * Reset the knowledge base, removing all know entitities from all intents.
  */
 void knowledge_reset() {
-	
+
 	/* to be implemented */
-	
+
 }
 
 
@@ -96,8 +165,8 @@ void knowledge_reset() {
  * Input:
  *   f - the file
  */
-void knowledge_write(FILE *f) {
-	
+void knowledge_write(FILE* f) {
+
 	/* to be implemented */
-	
+
 }
