@@ -18,14 +18,7 @@
 #include "chat1002.h"
 
 /* knowledge base of 5W 1H */
-struct knowledge_base {
-	char *who[255][2]; // declare max entity first cos not sure yet
-	char *where[255][2];
-	char *what[255][2];
-	char *when[255][2];
-	char *why[255][2];
-	char *how[255][2];
-} knowledge;
+char* knowledge[255][3];
 
 /*
  * Get the response to a question.
