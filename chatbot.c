@@ -181,8 +181,6 @@ int chatbot_is_load(const char *intent) {
 int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
-	printf("test that is load is working!!!\n"); // a test print
-
 	printf("Number of words in the user input: %d\n", inc); /* the number of words in the user input */
 	printf("Max response which should be 256: %d\n", n); /* max response which is 256 */
 	//printf("Chatbot's output: %c\n", *response); /* the chatbot's output */
@@ -190,14 +188,11 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	printf("Pointers for each word of input: %p\n", inv); /* pointers to the beginning of each word of input */
 
 	printf("filename is: %s\n\n\n", inv[1]);
-	//knowledge_read(inv[1]);
-	// ICT1002_Group Project Assignment_AY19_T1_Sample.ini
-	//fp = fopen("ICT1002_Group Project Assignment_AY19_T1_Sample.ini", "r");
+
 	int botintel = 0; // to store how many entity responses loaded from ini file
 
 	FILE* fp = fopen(inv[1], "r");
 	if (fp != NULL) {
-		printf("%s", inv[1]);
 		botintel = knowledge_read(fp);
 		fclose(fp);
 	}

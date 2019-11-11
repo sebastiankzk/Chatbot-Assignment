@@ -80,6 +80,7 @@ int knowledge_read(FILE *f) {
 	/* to be implemented */
 	char buff[255];
 	int intelligence = 0;
+	char current_intent[MAX_INTENT];
 
 	while (fgets(buff, 255, (FILE*)f) != NULL) {
 
@@ -91,24 +92,31 @@ int knowledge_read(FILE *f) {
 		/* check for intent brackets -> [ ] */
 		if (buff[0] == '[' && buff[len-1] == ']')
 		{
-			printf("%d ", strlen(buff));
+			//printf("%d ", strlen(buff));
 			if (strcmp(buff, "[who]") == 0) {
-				printf("who "); // test print
+				
+				strcpy(current_intent, "who");
+				printf("%s ", current_intent); // test print
 			}
 			else if (strcmp(buff, "[what]") == 0) {
-				printf("what "); // test print
+				strcpy(current_intent, "what");
+				printf("%s ", current_intent); // test print
 			}
 			else if (strcmp(buff, "[when]") == 0) {
-				printf("when "); // test print
+				strcpy(current_intent, "when");
+				printf("%s ", current_intent); // test print
 			}
 			else if (strcmp(buff, "[where]") == 0) {
-				printf("where "); // test print
+				strcpy(current_intent, "where");
+				printf("%s ", current_intent); // test print
 			}
 			else if (strcmp(buff, "[why]") == 0) {
-				printf("why "); // test print
+				strcpy(current_intent, "why");
+				printf("%s ", current_intent); // test print
 			}
 			else if (strcmp(buff, "[how]") == 0) {
-				printf("how "); // test print
+				strcpy(current_intent, "how");
+				printf("%s ", current_intent); // test print
 			}
 
 			printf("%s\n", buff);
