@@ -53,7 +53,9 @@
  * Returns: the name of the chatbot as a null-terminated string
  */
 const char *chatbot_botname() {
+
 	return "Jamie";
+	
 }
 
 
@@ -63,7 +65,9 @@ const char *chatbot_botname() {
  * Returns: the name of the user as a null-terminated string
  */
 const char *chatbot_username() {
+
 	return "User";
+	
 }
 
 
@@ -154,14 +158,8 @@ int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
 int chatbot_is_load(const char *intent) {
 	
 	/* to be implemented */
-	if (strcmp(intent, "load") == 0)
-	{
-		return 1;
-	} 
-	else
-	{
-		return 0;
-	}
+	
+	return 0;
 	
 }
 
@@ -178,7 +176,7 @@ int chatbot_is_load(const char *intent) {
 int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
-	printf("test that is load is working!!!"); // a test print
+	 
 	return 0;
 	 
 }
