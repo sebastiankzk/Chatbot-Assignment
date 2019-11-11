@@ -189,18 +189,6 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	snprintf(response, n, "Read %d responses from %s.", 0, "sample.ini"); // hardcoded values first
 	printf("Pointers for each word of input: %p\n", inv); /* pointers to the beginning of each word of input */
 
-	printf("filename is: %s\n", inv[1]);
-	//knowledge_read(inv[1]);
-
-	FILE* fp;
-	char buff[255];
-	// ICT1002_Group Project Assignment_AY19_T1_Sample.ini
-	//fp = fopen("ICT1002_Group Project Assignment_AY19_T1_Sample.ini", "r");
-	fp = fopen("C:/Users/Yong Quan/Desktop/test.txt", "r");
-	fscanf(fp, "%s", buff);
-	printf("1 : %s\n", buff);
-	printf("file pointer is: %p\n", fp);
-
 	return 0;
 	 
 }
