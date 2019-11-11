@@ -5,3 +5,10 @@
 *.filters
 Debug/
 .vs/
+*.db
+*.lastbuildstate
+*.tlog
+*.ilk
+*.log
+*.pdb
+*.idb
