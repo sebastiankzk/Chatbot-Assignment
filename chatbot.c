@@ -53,9 +53,7 @@
  * Returns: the name of the chatbot as a null-terminated string
  */
 const char *chatbot_botname() {
-
 	return "Jamie";
-
 }
 
 
@@ -65,9 +63,7 @@ const char *chatbot_botname() {
  * Returns: the name of the user as a null-terminated string
  */
 const char *chatbot_username() {
-
 	return "User";
-
 }
 
 
@@ -121,9 +117,9 @@ int chatbot_main(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_exit(const char *intent) {
-
+	
 	return compare_token(intent, "exit") == 0 || compare_token(intent, "quit") == 0;
-
+	
 }
 
 
@@ -137,12 +133,11 @@ int chatbot_is_exit(const char *intent) {
  *   0 (the chatbot always continues chatting after a question)
  */
 int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
-
-	/* edit this to change chatbot response when you quit */
+	 
 	snprintf(response, n, "Goodbye!");
 	 
 	return 1;
-
+	 
 }
 
 
@@ -157,6 +152,7 @@ int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_load(const char *intent) {
+	
 	/* to be implemented */
 	if (strcmp(intent, "load") == 0)
 	{
@@ -166,6 +162,7 @@ int chatbot_is_load(const char *intent) {
 	{
 		return 0;
 	}
+	
 }
 
 
@@ -181,14 +178,7 @@ int chatbot_is_load(const char *intent) {
 int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
-	printf("test that is load is working!!!\n"); // a test print
-
-	printf("Number of words in the user input: %d\n", inc); /* the number of words in the user input */
-	printf("Max response which should be 256: %d\n", n); /* max response which is 256 */
-	//printf("Chatbot's output: %c\n", *response); /* the chatbot's output */
-	snprintf(response, n, "Read %d responses from %s.", 0, "sample.ini"); // hardcoded values first
-	printf("Pointers for each word of input: %p\n", inv); /* pointers to the beginning of each word of input */
-
+	printf("test that is load is working!!!"); // a test print
 	return 0;
 	 
 }
@@ -349,13 +339,8 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
 int chatbot_is_reset(const char *intent) {
 	
 	/* to be implemented */
-	if (strcmp(intent, "reset") == 0)
-	{
-		return 1;
-	}
-	else {
-		return 0;
-	}
+	
+	return 0;
 	
 }
 
@@ -372,8 +357,7 @@ int chatbot_is_reset(const char *intent) {
 int chatbot_do_reset(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
-	snprintf(response, n, "Chatbot reset.");
-
+	 
 	return 0;
 	 
 }
@@ -392,13 +376,8 @@ int chatbot_do_reset(int inc, char *inv[], char *response, int n) {
 int chatbot_is_save(const char *intent) {
 	
 	/* to be implemented */
-	if (strcmp(intent, "save") == 0)
-	{
-		return 1;
-	}
-	else {
-		return 0;
-	}
+	
+	return 0;
 	
 }
 
@@ -415,8 +394,7 @@ int chatbot_is_save(const char *intent) {
 int chatbot_do_save(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
-	snprintf(response, n, "My knowledge has been saved to %s.\n", "sample-plus.ini"); // hard coded first
-
+	
 	return 0;
 	 
 }
@@ -434,6 +412,8 @@ int chatbot_do_save(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_smalltalk(const char *intent) {
+
+
 
 	if (strcmp(intent,"hello") == 0)
 	{
@@ -461,6 +441,8 @@ int chatbot_is_smalltalk(const char *intent) {
 	}
 
 	/* to be implemented */
+	
+	
  
 }
 
@@ -515,6 +497,8 @@ int chatbot_do_smalltalk(int inc, char *inv[], char *response, int n) {
 		snprintf(response, n, "I don't understand \"%s\".", inv[0]);
 		return 1;
 	}
+	
+	
 	
 }
   
