@@ -157,10 +157,15 @@ int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_load(const char *intent) {
-
 	/* to be implemented */
-	return compare_token(intent, "load") == 0;
-
+	if (strcmp(intent, "load") == 0)
+	{
+		return 1;
+	} 
+	else
+	{
+		return 0;
+	}
 }
 
 
@@ -186,8 +191,7 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 
 	int botintel = 0; // to store how many entity responses loaded from ini file
 
-	//FILE* fp = fopen(inv[1], "r"); // supposed to be this
-	FILE* fp = fopen("C:\\Users\\Yong Quan\\Documents\\GitHub\\Chatbot-Assignment\\sample.ini", "r");// hard code first while testing, change name of user
+	FILE* fp = fopen(inv[1], "r");
 	if (fp != NULL) {
 		botintel = knowledge_read(fp);
 		fclose(fp);
@@ -356,7 +360,13 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
 int chatbot_is_reset(const char *intent) {
 	
 	/* to be implemented */
-	return compare_token(intent, "reset") == 0;
+	if (strcmp(intent, "reset") == 0)
+	{
+		return 1;
+	}
+	else {
+		return 0;
+	}
 	
 }
 
@@ -373,7 +383,6 @@ int chatbot_is_reset(const char *intent) {
 int chatbot_do_reset(int inc, char *inv[], char *response, int n) {
 	
 	/* to be implemented */
-	knowledge_reset();
 	snprintf(response, n, "Chatbot reset.");
 
 	return 0;
@@ -394,7 +403,13 @@ int chatbot_do_reset(int inc, char *inv[], char *response, int n) {
 int chatbot_is_save(const char *intent) {
 	
 	/* to be implemented */
-	return compare_token(intent, "reset") == 0;
+	if (strcmp(intent, "save") == 0)
+	{
+		return 1;
+	}
+	else {
+		return 0;
+	}
 	
 }
 
@@ -513,3 +528,4 @@ int chatbot_do_smalltalk(int inc, char *inv[], char *response, int n) {
 	}
 	
 }
+  
