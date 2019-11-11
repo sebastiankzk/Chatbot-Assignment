@@ -54,7 +54,6 @@
  */
 const char *chatbot_botname() {
 
-	/* edit to change bot name */
 	return "Jamie";
 
 }
@@ -67,7 +66,6 @@ const char *chatbot_botname() {
  */
 const char *chatbot_username() {
 
-	/* edit to change user name */
 	return "User";
 
 }
@@ -124,7 +122,6 @@ int chatbot_main(int inc, char *inv[], char *response, int n) {
  */
 int chatbot_is_exit(const char *intent) {
 
-	/* chatbot_do_exit will invoke as long as one of the compare_token returns 0, (0 == 0 = 1), 1 OR 'anything' will be 1 */
 	return compare_token(intent, "exit") == 0 || compare_token(intent, "quit") == 0;
 
 }
@@ -162,8 +159,6 @@ int chatbot_do_exit(int inc, char *inv[], char *response, int n) {
 int chatbot_is_load(const char *intent) {
 
 	/* to be implemented */
-
-	/* chatbot_do_load will invoke if compare_token returns 0, (0 == 0) = 1 */
 	return compare_token(intent, "load") == 0;
 
 }
@@ -219,15 +214,7 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 int chatbot_is_question(const char *intent) {
 	
 	/* to be implemented */
-	return
-		compare_token(intent, "who") == 0 ||
-		compare_token(intent, "what") == 0 ||
-		compare_token(intent, "when") == 0 ||
-		compare_token(intent, "where") == 0 ||
-		compare_token(intent, "why") == 0 ||
-		compare_token(intent, "how") == 0;
-
-	/*if (strcmp(intent, "who") == 0)
+	if (strcmp(intent, "who") == 0)
 	{
 		return 1;
 	}
@@ -240,7 +227,7 @@ int chatbot_is_question(const char *intent) {
 		return 1;
 	}
 	
-	return 0;*/
+	return 0;
 	
 }
 
@@ -369,8 +356,6 @@ int chatbot_do_question(int inc, char *inv[], char *response, int n) {
 int chatbot_is_reset(const char *intent) {
 	
 	/* to be implemented */
-
-	/* chatbot_do_reset will invoke if compare_token returns 0, (0 == 0) = 1 */
 	return compare_token(intent, "reset") == 0;
 	
 }
@@ -409,8 +394,6 @@ int chatbot_do_reset(int inc, char *inv[], char *response, int n) {
 int chatbot_is_save(const char *intent) {
 	
 	/* to be implemented */
-
-	/* chatbot_do_save will invoke if compare_token returns 0 */
 	return compare_token(intent, "reset") == 0;
 	
 }
@@ -447,12 +430,8 @@ int chatbot_do_save(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_smalltalk(const char *intent) {
-	return
-		compare_token(intent, "hello") == 0 ||
-		compare_token(intent, "hi") == 0 ||
-		compare_token(intent, "good") == 0 ||
-		compare_token(intent, "hey") == 0;
-	/*if (strcmp(intent,"hello") == 0)
+
+	if (strcmp(intent,"hello") == 0)
 	{
 		return 1;
 	}
@@ -475,7 +454,7 @@ int chatbot_is_smalltalk(const char *intent) {
 	else
 	{
 		return 0;
-	}*/
+	}
 
 	/* to be implemented */
  
