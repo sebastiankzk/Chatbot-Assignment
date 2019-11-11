@@ -226,6 +226,21 @@ int chatbot_is_question(const char *intent) {
 		compare_token(intent, "where") == 0 ||
 		compare_token(intent, "why") == 0 ||
 		compare_token(intent, "how") == 0;
+
+	/*if (strcmp(intent, "who") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "what") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "where") == 0)
+	{
+		return 1;
+	}
+	
+	return 0;*/
 	
 }
 
@@ -432,14 +447,38 @@ int chatbot_do_save(int inc, char *inv[], char *response, int n) {
  *  0, otherwise
  */
 int chatbot_is_smalltalk(const char *intent) {
-	
-	/* to be implemented */
 	return
 		compare_token(intent, "hello") == 0 ||
 		compare_token(intent, "hi") == 0 ||
 		compare_token(intent, "good") == 0 ||
 		compare_token(intent, "hey") == 0;
+	/*if (strcmp(intent,"hello") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "hi") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "good") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "how") == 0)
+	{
+		return 1;
+	}
+	else if (strcmp(intent, "hey") == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}*/
 
+	/* to be implemented */
+ 
 }
 
 
