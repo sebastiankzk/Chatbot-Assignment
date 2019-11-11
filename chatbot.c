@@ -186,26 +186,20 @@ int chatbot_do_load(int inc, char *inv[], char *response, int n) {
 	printf("Number of words in the user input: %d\n", inc); /* the number of words in the user input */
 	printf("Max response which should be 256: %d\n", n); /* max response which is 256 */
 	//printf("Chatbot's output: %c\n", *response); /* the chatbot's output */
-	
+	snprintf(response, n, "Read %d responses from %s.", 0, "sample.ini"); // hardcoded values first
 	printf("Pointers for each word of input: %p\n", inv); /* pointers to the beginning of each word of input */
 
 	printf("filename is: %s\n\n\n", inv[1]);
 	//knowledge_read(inv[1]);
 	// ICT1002_Group Project Assignment_AY19_T1_Sample.ini
 	//fp = fopen("ICT1002_Group Project Assignment_AY19_T1_Sample.ini", "r");
-	int botintel = 0; // to store how many entity responses loaded from ini file
-
 	FILE* fp;
 	fp = fopen("C:/Users/Yong Quan/Desktop/test.ini", "r");
 
 	if (fp != NULL) {
-		botintel = knowledge_read(fp);
+		knowledge_read(fp);
 		fclose(fp);
 	}
-
-	/* test ini file has 11 lines of entity responses */
-	snprintf(response, n, "Read %d responses from %s.", botintel, "sample.ini"); // hardcoded values first, original
-	snprintf(response, n, "\nStrength: 0\nDexterity: 0\nIntelligence: %d\nLuck: 0\n", botintel); // tweaked
 
 	return 0;
 	 
