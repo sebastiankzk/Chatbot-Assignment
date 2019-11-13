@@ -192,7 +192,7 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
 	int botintel = 0; // to store how many entity responses loaded from ini file
 
 	//FILE* fp = fopen(inv[1], "r"); // supposed to be this
-	FILE* fp = fopen("C:\\Users\\Yong Quan\\Documents\\GitHub\\Chatbot-Assignment\\sample.ini", "r");// hard code first while testing, change name of user
+	FILE* fp = fopen("..\\sample.ini", "r");// hard code first while testing, change name of user
 	if (fp != NULL) {
 		botintel = knowledge_read(fp);
 		fclose(fp);
@@ -219,13 +219,9 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
 int chatbot_is_question(const char* intent) {
 
 	/* to be implemented */
-	return
-		compare_token(intent, "who") == 0 ||
-		compare_token(intent, "what") == 0 ||
-		compare_token(intent, "when") == 0 ||
-		compare_token(intent, "where") == 0 ||
-		compare_token(intent, "why") == 0 ||
-		compare_token(intent, "how") == 0;
+	return compare_token(intent, "who") == 0 || compare_token(intent, "what") == 0 
+		|| compare_token(intent, "when") == 0 || compare_token(intent, "where") == 0 
+		|| compare_token(intent, "why") == 0 || compare_token(intent, "how") == 0;
 
 }
 
@@ -261,24 +257,31 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 		}
 	}
 
-	if (startentity == 5)
+	/*if (startentity == 5)
 	{
 
 	}
 	else if (startentity == 6)
 	{
 
+	}*/
+
+	char INIValue[256];
+	int output = knowledge_get(inv[intent], inv[startentity], "", INIValue);
+
+	if (output == 0)
+	{
+
+	}
+	else
+	{
+		//snprintf(response, n, "I don't understand what you said");
+		snprintf(response, n, "I don't know \"%s\".", inv[startentity]);
 	}
 
-	// Skip 2nd word
-	//if (skip == 1)
-	//{
-	//	startentity++;
-	//}
-
-	if (strcmp(inv[intent], "who") == 0)
+	/*if (strcmp(inv[intent], "who") == 0)
 	{
-		if (strcmp(inv[2], "frank") == 0)
+		if (strcmp(inv[startentity], "frank") == 0)
 		{
 			snprintf(response, n, "Frank is a lectuer at SIT.");
 			return 0;
@@ -331,10 +334,8 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 		}
 	}
 
-	//snprintf(response, n, "I don't understand what you said");
 	snprintf(response, n, "I don't know \"%s\".", inv[startentity]);
-
-	/* to be implemented */
+	*/
 
 	return 0;
 

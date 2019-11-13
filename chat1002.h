@@ -22,6 +22,9 @@
 /* the maximum number of characters allowed in a response (including the terminating null) */
 #define MAX_RESPONSE 256
 
+/* location address of ini. file */
+#define INIAddress "..\\ICT1002_Group Project Assignment_AY19_T1_Sample.ini"
+
 /* return codes for knowledge_get() and knowledge_put() */
 #define KB_OK        0
 #define KB_NOTFOUND -1
