@@ -15,9 +15,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "chat1002.h"
 #include <windows.h>
 #include <winbase.h>
-#include "chat1002.h"
 
  /* knowledge base of 5W 1H */
 char* knowledge[255];
@@ -38,16 +38,12 @@ char* knowledge[255];
  */
 int knowledge_get(const char* intent, const char* entity, char* response, int n) {
 
-	/* to be implemented */
-
 	char INIValue[256];
-
-	GetPrivateProfileString(intent, entity, "", INIValue, 256, INIAddress);
-
+	GetPrivateProfileString(intent, entity, "", INIValue, MAX_INPUT, INIAddress);
+	
 	if (strlen(INIValue) > 0)
 	{
-		//printf("%s\n", INIValue);
-		//snprintf(response, n, "%s\n", INIValue);
+		snprintf(response, n, "%s", INIValue);
 		return KB_OK;
 	}
 	else

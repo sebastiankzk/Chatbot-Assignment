@@ -46,6 +46,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <stdbool.h> 
+#include <windows.h>
+#include <winbase.h>
 
  /*
   * Get the name of the chatbot.
@@ -218,11 +220,24 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
  */
 int chatbot_is_question(const char* intent) {
 
-	/* to be implemented */
-	return compare_token(intent, "who") == 0 || compare_token(intent, "what") == 0 
-		|| compare_token(intent, "when") == 0 || compare_token(intent, "where") == 0 
-		|| compare_token(intent, "why") == 0 || compare_token(intent, "how") == 0;
+	// Retrieve all sections from INI file
+	char INISection[256];
+	GetPrivateProfileSectionNames(INISection, MAX_INPUT, INIAddress);
 
+	// Loop through array to retrieve each section
+	char* section = INISection;
+	while (*section) {
+
+		// Check if intent exists
+		if (compare_token(intent, section) == 0)
+		{
+			return 1;
+		}
+		section = strchr(section, '\0');
+		section++;
+	}
+
+	return 0;
 }
 
 
@@ -257,17 +272,7 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 		}
 	}
 
-	/*if (startentity == 5)
-	{
-
-	}
-	else if (startentity == 6)
-	{
-
-	}*/
-
-	char INIValue[256];
-	int output = knowledge_get(inv[intent], inv[startentity], "", INIValue);
+	int output = knowledge_get(inv[intent], inv[startentity], response, MAX_INPUT);
 
 	if (output == 0)
 	{
