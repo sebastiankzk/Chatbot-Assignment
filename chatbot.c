@@ -237,8 +237,7 @@ int chatbot_is_question(const char* intent) {
  */
 int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 
-	knowledge_get(inv[0], "Frank Guan", response, n);
-	/*const char skippedwords[4][5] = { "is", "are", "was", "were" };
+	const char skippedwords[4][5] = { "is", "are", "was", "were" };
 	//bool skip = 0;
 	int intent = 0;
 	int startentity = 1;

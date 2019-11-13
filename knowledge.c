@@ -17,12 +17,12 @@
 #include <string.h>
 #include "chat1002.h"
 
-/* knowledge base of 5W 1H */
-/* KB */
-//char* knowledge[255][3];
+ /* knowledge base of 5W 1H */
+ /* KB */
+ //char* knowledge[255][3];
 typedef struct knowledge {
-	char *entity;
-	char *response;
+	char entity[MAX_ENTITY];
+	char response[MAX_RESPONSE];
 } knowledge_base;
 
 
@@ -51,21 +51,12 @@ knowledge_base how_knowledge_arr[255];
 int knowledge_get(const char* intent, const char* entity, char* response, int n) {
 
 	/* to be implemented */
-	printf("%s is %s\n", intent, entity);
+
 	/*for (int i = 0; i < 255; i++) {
+		printf("%s is %s\n", who_knowledge_arr[i].entity, who_knowledge_arr[i].response);
 
-		if (what_knowledge_arr[i].entity != NULL && what_knowledge_arr) {
-			printf("%s is %s\n", what_knowledge_arr[i].entity, what_knowledge_arr[i].response);
-		}
-		else {
-			break;
-		}
 	}*/
-	for (int i = 0; i < 255; i++) {
-		printf("%s is %s\n", what_knowledge_arr[i].entity, what_knowledge_arr[i].response);
 
-	}
-	
 	return KB_NOTFOUND;
 
 }
@@ -89,7 +80,7 @@ int knowledge_get(const char* intent, const char* entity, char* response, int n)
 int knowledge_put(const char* intent, const char* entity, const char* response) {
 
 	/* to be implemented */
-	
+
 	return KB_INVALID;
 
 }
@@ -108,12 +99,11 @@ int knowledge_read(FILE* f) {
 	/* to be implemented */
 	char buff[255];
 	int intelligence = 0;
-	char* intents[6] = {"how","who","why","when","what","where"};
-	int wint = 0;
 	char current_intent[MAX_INTENT];
 	char current_entity[MAX_ENTITY];
 	char current_response[MAX_RESPONSE];
-	
+
+	int cnt = 0;
 	char* token;
 
 	while (fgets(buff, 255, (FILE*)f) != NULL) {
@@ -127,34 +117,34 @@ int knowledge_read(FILE* f) {
 			//printf("%d ", strlen(buff));
 
 			if (strcmp(buff, "[where]") == 0) {
-				wint = 5;
 				strcpy(current_intent, "where\0");
 				printf("%s ", current_intent); // test print
+				cnt = 0;
 			}
 			else if (strcmp(buff, "[what]") == 0) {
-				wint = 4;
 				strcpy(current_intent, "what\0");
 				printf("%s ", current_intent); // test print
+				cnt = 0;
 			}
 			else if (strcmp(buff, "[when]") == 0) {
-				wint = 3;
 				strcpy(current_intent, "when\0");
 				printf("%s ", current_intent); // test print
+				cnt = 0;
 			}
 			else if (strcmp(buff, "[who]") == 0) {
-				wint = 1;
 				strcpy(current_intent, "who\0");
 				printf("%s ", current_intent); // test print
+				cnt = 0;
 			}
 			else if (strcmp(buff, "[why]") == 0) {
-				wint = 2;
 				strcpy(current_intent, "why\0");
 				printf("%s ", current_intent); // test print
+				cnt = 0;
 			}
 			else if (strcmp(buff, "[how]") == 0) {
-				wint = 0;
 				strcpy(current_intent, "how\0");
 				printf("%s ", current_intent); // test print
+				cnt = 0;
 			}
 
 			printf("%s\n", buff);
@@ -164,76 +154,69 @@ int knowledge_read(FILE* f) {
 		{
 			//printf("%s\n%s\n", current_intent, buff);
 			token = strtok(buff, "=");
-			//who_knowledge_arr[intelligence].entity = token;
 			strcpy(current_entity, token);
 
 			token = strtok(NULL, "=");
 			strcpy(current_response, token);
-			
+
 			if (compare_token(current_intent, "who") == 0) {
 				printf("I put in who");
-				for (int i = 0; i < 255; i++) {
-					if (who_knowledge_arr[i].entity == NULL || who_knowledge_arr[i].response == NULL) {
-						who_knowledge_arr[intelligence].entity = current_entity;
-						who_knowledge_arr[intelligence].response = current_response;
-						break;
-					}
-				}
+
+				//who_knowledge_arr[cnt].entity = current_entity;
+				//who_knowledge_arr[cnt].response = current_response;
+				strcpy(who_knowledge_arr[cnt].entity, current_entity);
+				strcpy(who_knowledge_arr[cnt].response, current_response);
+
 			}
 			else if (compare_token(current_intent, "what") == 0) {
 				printf("I put in what");
-				for (int i = 0; i < 255; i++) {
-					if (what_knowledge_arr[i].entity == NULL || what_knowledge_arr[i].response == NULL) {
-						what_knowledge_arr[intelligence].entity = current_entity;
-						what_knowledge_arr[intelligence].response = current_response;
-						break;
-					}
-				}
+
+				//what_knowledge_arr[cnt].entity = current_entity;
+				//what_knowledge_arr[cnt].response = current_response;
+				strcpy(what_knowledge_arr[cnt].entity, current_entity);
+				strcpy(what_knowledge_arr[cnt].response, current_response);
+
 			}
 			else if (compare_token(current_intent, "when") == 0) {
 				printf("I put in when");
-				for (int i = 0; i < 255; i++) {
-					if (when_knowledge_arr[i].entity == NULL || when_knowledge_arr[i].response == NULL) {
-						when_knowledge_arr[intelligence].entity = current_entity;
-						when_knowledge_arr[intelligence].response = current_response;
-						break;
-					}
-				}
+
+				//when_knowledge_arr[cnt].entity = current_entity;
+				//when_knowledge_arr[cnt].response = current_response;
+				strcpy(when_knowledge_arr[cnt].entity, current_entity);
+				strcpy(when_knowledge_arr[cnt].response, current_response);
+
 			}
 			else if (compare_token(current_intent, "where") == 0) {
 				printf("I put in where");
-				for (int i = 0; i < 255; i++) {
-					if (where_knowledge_arr[i].entity == NULL || where_knowledge_arr[i].response == NULL) {
-						where_knowledge_arr[intelligence].entity = current_entity;
-						where_knowledge_arr[intelligence].response = current_response;
-						break;
-					}
-				}
+
+				//where_knowledge_arr[cnt].entity = current_entity;
+				//where_knowledge_arr[cnt].response = current_response;
+				strcpy(where_knowledge_arr[cnt].entity, current_entity);
+				strcpy(where_knowledge_arr[cnt].response, current_response);
+
 			}
 			else if (compare_token(current_intent, "why") == 0) {
 				printf("I put in why");
-				for (int i = 0; i < 255; i++) {
-					if (why_knowledge_arr[i].entity == NULL || why_knowledge_arr[i].response == NULL) {
-						why_knowledge_arr[intelligence].entity = current_entity;
-						why_knowledge_arr[intelligence].response = current_response;
-						break;
-					}
-				}
+
+				//why_knowledge_arr[cnt].entity = current_entity;
+				//why_knowledge_arr[cnt].response = current_response;
+				strcpy(why_knowledge_arr[cnt].entity, current_entity);
+				strcpy(why_knowledge_arr[cnt].response, current_response);
+
 			}
 			else if (compare_token(current_intent, "how") == 0) {
 				printf("I put in how");
-				for (int i = 0; i < 255; i++) {
-					if (how_knowledge_arr[i].entity == NULL || how_knowledge_arr[i].response == NULL) {
-						how_knowledge_arr[intelligence].entity = current_entity;
-						how_knowledge_arr[intelligence].response = current_response;
-						break;
-					}
-				}
-			}
-			
-			//printf("%s\t%s\n", who_knowledge_arr[intelligence].entity, who_knowledge_arr[intelligence].response);
-			//printf("%s\n", current_intent);
 
+				//how_knowledge_arr[cnt].entity = current_entity;
+				//how_knowledge_arr[cnt].response = current_response;
+				strcpy(how_knowledge_arr[cnt].entity, current_entity);
+				strcpy(how_knowledge_arr[cnt].response, current_response);
+
+			}
+
+			printf("%s\t%s\n", who_knowledge_arr[intelligence].entity, who_knowledge_arr[intelligence].response);
+			//printf("%s\n", current_intent);
+			cnt++; // for file cnt
 			intelligence++;
 		}
 
