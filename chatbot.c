@@ -181,14 +181,6 @@ int chatbot_is_load(const char* intent) {
 int chatbot_do_load(int inc, char* inv[], char* response, int n) {
 
 	/* to be implemented */
-	printf("Number of words in the user input: %d\n", inc); /* the number of words in the user input */
-	printf("Max response which should be 256: %d\n", n); /* max response which is 256 */
-	//printf("Chatbot's output: %c\n", *response); /* the chatbot's output */
-
-	printf("Pointers for each word of input: %p\n", inv); /* pointers to the beginning of each word of input */
-
-	printf("filename is: %s\n\n\n", inv[1]);
-
 	int botintel = 0; // to store how many entity responses loaded from ini file
 
 	//FILE* fp = fopen(inv[1], "r"); // supposed to be this
@@ -245,7 +237,8 @@ int chatbot_is_question(const char* intent) {
  */
 int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 
-	const char skippedwords[4][5] = { "is", "are", "was", "were" };
+	knowledge_get(inv[0], "Frank Guan", response, n);
+	/*const char skippedwords[4][5] = { "is", "are", "was", "were" };
 	//bool skip = 0;
 	int intent = 0;
 	int startentity = 1;
