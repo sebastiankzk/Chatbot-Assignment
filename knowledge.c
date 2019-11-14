@@ -34,7 +34,7 @@ knowledge_base where_knowledge_arr[255];
 knowledge_base why_knowledge_arr[255];
 knowledge_base when_knowledge_arr[255];
 knowledge_base how_knowledge_arr[255];
-
+//char *section[10] = {"Who", "What", "When", "Where", "Why", "How"};
 
 /*
  * Get the response to a question.
@@ -52,15 +52,81 @@ knowledge_base how_knowledge_arr[255];
  */
 int knowledge_get(const char* intent, const char* entity, char* response, int n) {
 
-	/* to be implemented */
+	
+	///*intent not found*/
+	//for (int i = 0; i < 6; i++)
+	//{
+	//	
+	//}
 
-	/*for (int i = 0; i < 255; i++) {
-		printf("%s is %s\n", who_knowledge_arr[i].entity, who_knowledge_arr[i].response);
-
-	}*/
-
+	if (compare_token(intent, "who") == 0)
+	{
+		for (int i = 0; i < 255; i++) 
+		{
+			if (compare_token(who_knowledge_arr[i].entity, entity) == 0)
+			{
+				snprintf(response, n, who_knowledge_arr[i].response);
+				return KB_OK;
+			}
+		}
+	}
+	else if (compare_token(intent, "what") == 0)
+	{
+		for (int i = 0; i < 255; i++)
+		{
+			if (compare_token(what_knowledge_arr[i].entity, entity) == 0)
+			{
+				snprintf(response, n, what_knowledge_arr[i].response);
+				return KB_OK;
+			}
+		}
+	}
+	else if (compare_token(intent, "when") == 0)
+	{
+		for (int i = 0; i < 255; i++)
+		{
+			if (compare_token(when_knowledge_arr[i].entity, entity) == 0)
+			{
+				snprintf(response, n, when_knowledge_arr[i].response);
+				return KB_OK;
+			}
+		}
+	}
+	else if (compare_token(intent, "where") == 0)
+	{
+		for (int i = 0; i < 255; i++)
+		{
+			if (compare_token(where_knowledge_arr[i].entity, entity) == 0)
+			{
+				snprintf(response, n, where_knowledge_arr[i].response);
+				return KB_OK;
+			}
+		}
+	}
+	else if (compare_token(intent, "why") == 0)
+	{
+		for (int i = 0; i < 255; i++)
+		{
+			if (compare_token(why_knowledge_arr[i].entity, entity) == 0)
+			{
+				snprintf(response, n, why_knowledge_arr[i].response);
+				return KB_OK;
+			}
+		}
+	}
+	else if (compare_token(intent, "how") == 0)
+	{
+		for (int i = 0; i < 255; i++)
+		{
+			if (compare_token(how_knowledge_arr[i].entity, entity) == 0)
+			{
+				snprintf(response, n, how_knowledge_arr[i].response);
+				return KB_OK;
+			}
+		}
+	}
+	/* Based on this return input call KNOWLEDGE_PUT HERE */
 	return KB_NOTFOUND;
-
 }
 
 
