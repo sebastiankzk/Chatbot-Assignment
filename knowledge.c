@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "chat1002.h"
+#include <windows.h>
+#include <winbase.h>
 
  /* knowledge base of 5W 1H */
  /* KB */
