@@ -150,7 +150,8 @@ int knowledge_read(FILE* f) {
 			printf("%s\n", buff);
 
 		}
-		else if (isalpha(buff[0]))
+		//else if (isalpha(buff[0]))
+		else if (strchr(buff, '=') != NULL)
 		{
 			//printf("%s\n%s\n", current_intent, buff);
 			token = strtok(buff, "=");
