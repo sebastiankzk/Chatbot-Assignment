@@ -97,7 +97,7 @@ int compare_token(const char *token1, const char *token2) {
 	while (token1[i] != '\0' && token2[i] != '\0') {
 		if (toupper(token1[i]) < toupper(token2[i]))
 			return -1;
-		else if (toupper(token1[i]) > toupper(token2[i]))
+ 		else if (toupper(token1[i]) > toupper(token2[i]))
 			return 1;
 		i++;
 	}
