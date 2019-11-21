@@ -19,21 +19,7 @@
 #include <windows.h>
 #include <winbase.h>
 
- /* knowledge base of 5W 1H */
- /* KB */
- //char* knowledge[255][3];
-typedef struct knowledge {
-	char entity[MAX_ENTITY];
-	char response[MAX_RESPONSE];
-} knowledge_base;
 
-
-knowledge_base who_knowledge_arr[255];
-knowledge_base what_knowledge_arr[255];
-knowledge_base where_knowledge_arr[255];
-knowledge_base why_knowledge_arr[255];
-knowledge_base when_knowledge_arr[255];
-knowledge_base how_knowledge_arr[255];
 //char *section[10] = {"Who", "What", "When", "Where", "Why", "How"};
 
 /*
@@ -313,6 +299,44 @@ void knowledge_reset() {
  *   f - the file
  */
 void knowledge_write(FILE* f) {
+	int i;
+	
+	if (what_knowledge_arr != NULL)
+	{
+		i = 0;
+		fprintf(f, "[what]\n");	// print the header of what
+		while (compare_token(what_knowledge_arr[i].intent, "") != 0)
+		{
+			fprintf(f, "%s=%s\n", what_knowledge_arr[i].entity, what_knowledge_arr[i].response);
+			i++;
+		}
+		fprintf(f, "\n");
+	}
+
+	if (when_knowledge_arr != NULL)
+	{
+		i = 0;
+		fprintf(f, "[where]\n");	// print the header of what
+		while (compare_token(where_knowledge_arr[i].intent, "") != 0)
+		{
+			fprintf(f, "%s=%s\n", where_knowledge_arr[i].entity, where_knowledge_arr[i].response);
+			i++;
+		}
+
+		fprintf(f, "\n");
+	}
+
+	if (who_knowledge_arr != NULL)
+	{
+		int i = 0;
+		fprintf(f, "[who]\n");	// print the header of what
+		while (compare_token(who_knowledge_arr[i].intent, "") != 0)
+		{
+			fprintf(f, "%s=%s\n", who_knowledge_arr[i].entity, who_knowledge_arr[i].response);
+			i++;
+		}
+
+	}
 
 	/* to be implemented */
 

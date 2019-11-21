@@ -59,4 +59,21 @@ void knowledge_reset();
 int knowledge_read(FILE *f);
 void knowledge_write(FILE *f);
 
+/* knowledge base of 5W 1H */
+/* KB */
+//char* knowledge[255][3];
+typedef struct knowledge {
+	char intent[MAX_INTENT];
+	char entity[MAX_ENTITY];
+	char response[MAX_RESPONSE];
+
+} knowledge_base;
+
+
+knowledge_base who_knowledge_arr[255];
+knowledge_base what_knowledge_arr[255];
+knowledge_base where_knowledge_arr[255];
+knowledge_base why_knowledge_arr[255];
+knowledge_base when_knowledge_arr[255];
+knowledge_base how_knowledge_arr[255];
 #endif

@@ -186,7 +186,7 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
 	int botintel = 0; // to store how many entity responses loaded from ini file
 
 	//FILE* fp = fopen(inv[1], "r"); // supposed to be this
-	FILE* fp = fopen("..\\sample.ini", "r");// hard code first while testing, change name of user
+	FILE* fp = fopen("sample.ini", "r");// hard code first while testing, change name of user
 	if (fp != NULL) {
 		botintel = knowledge_read(fp);
 		fclose(fp);
@@ -392,9 +392,12 @@ int chatbot_do_reset(int inc, char* inv[], char* response, int n) {
 int chatbot_is_save(const char* intent) {
 
 	/* to be implemented */
+	
+	
+
 
 	/* chatbot_do_save will invoke if compare_token returns 0 */
-	return compare_token(intent, "reset") == 0;
+	return compare_token(intent, "save") == 0;
 
 }
 
@@ -409,12 +412,27 @@ int chatbot_is_save(const char* intent) {
  *   0 (the chatbot always continues chatting after saving knowledge)
  */
 int chatbot_do_save(int inc, char* inv[], char* response, int n) {
+	char filename[MAX_INPUT];
+	FILE* fp;
+	if (inc == 1)
+	{
+		snprintf(response, n, "Sorry. Please indicate a file name to save.");
+		return 0;
+	}
 
-	/* to be implemented */
-	snprintf(response, n, "My knowledge has been saved to %s.\n", "sample-plus.ini"); // hard coded first
-
+	if ((compare_token(inv[1], "as") == 0) || (compare_token(inv[1], "to") == 0))
+	{
+		strcpy(filename, inv[2]);
+	}
+	else
+	{
+		strcpy(filename, inv[1]);
+	}
+	fp = fopen(filename, "w");
+	knowledge_write(fp);
+	snprintf(response, n, "My knowledge has been saved to %s.", filename);
+	fclose(fp);
 	return 0;
-
 }
 
 
