@@ -272,8 +272,17 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 	}
 	else
 	{
+		char buffer[MAX_INPUT];
 		//snprintf(response, n, "I don't understand what you said");
-		snprintf(response, n, "I don't know \"%s\".", inv[startentity]);
+		printf("%s: I don't know \"%s\".\n",chatbot_botname() ,inv[startentity]);
+		printf("%s: ", chatbot_username());
+		fgets(buffer, MAX_INPUT, stdin);
+		if (strcmp(buffer, "\n") != 0)
+		{
+			knowledge_put(inv[intent], inv[startentity], buffer);
+			snprintf(response, n, "Thank You.");
+		}
+		
 	}
 
 	/*if (strcmp(inv[intent], "who") == 0)

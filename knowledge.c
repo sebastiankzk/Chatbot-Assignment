@@ -20,6 +20,9 @@
 #include <winbase.h>
 
 
+
+
+
 //char *section[10] = {"Who", "What", "When", "Where", "Why", "How"};
 
 /*
@@ -134,8 +137,178 @@ int knowledge_get(const char* intent, const char* entity, char* response, int n)
 int knowledge_put(const char* intent, const char* entity, const char* response) {
 
 	/* to be implemented */
+	int searchCount = 0;
+	bool exist = false;
+	response = strtok(response, "\n");
 
-	return KB_INVALID;
+	if (compare_token(intent, "who") == 0)
+	{
+		for (searchCount = 0; who_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		{
+			if (strcmp(who_knowledge_arr[searchCount].entity, entity) == 0)
+			{
+				exist = true;
+				break;
+			}
+
+			if (strcmp(who_knowledge_arr[searchCount].entity, "") == 0)
+			{
+				strcpy(who_knowledge_arr[searchCount].entity, entity);
+				strcpy(who_knowledge_arr[searchCount].response, response);
+				
+				return KB_OK;
+			}
+		}
+
+		if (exist == true)
+		{
+			strcpy(who_knowledge_arr[searchCount].entity, entity);
+			strcpy(who_knowledge_arr[searchCount].response, response);
+			
+			return KB_OK;
+		}
+	}
+	else if (compare_token(intent, "what") == 0)
+	{
+		for (searchCount = 0; what_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		{
+			if (strcmp(what_knowledge_arr[searchCount].entity, entity) == 0)
+			{
+				exist = true;
+				break;
+			}
+
+			if (strcmp(what_knowledge_arr[searchCount].entity, "") == 0)
+			{
+				strcpy(what_knowledge_arr[searchCount].entity, entity);
+				strcpy(what_knowledge_arr[searchCount].response, response);
+				
+				return KB_OK;
+			}
+		}
+
+		if (exist == true)
+		{
+			strcpy(what_knowledge_arr[searchCount].entity, entity);
+			strcpy(what_knowledge_arr[searchCount].response, response);
+			
+			return KB_OK;
+		}
+	}
+	else if (compare_token(intent, "where") == 0)
+	{
+		for (searchCount = 0; where_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		{
+			if (strcmp(where_knowledge_arr[searchCount].entity, entity) == 0)
+			{
+				exist = true;
+				break;
+			}
+
+			if (strcmp(where_knowledge_arr[searchCount].entity, "") == 0)
+			{
+				strcpy(where_knowledge_arr[searchCount].entity, entity);
+				strcpy(where_knowledge_arr[searchCount].response, response);
+				
+				return KB_OK;
+			}
+		}
+
+		if (exist == true)
+		{
+			strcpy(where_knowledge_arr[searchCount].entity, entity);
+			strcpy(where_knowledge_arr[searchCount].response, response);
+			
+			return KB_OK;
+		}
+	}
+	else if (compare_token(intent, "when") == 0)
+	{
+		for (searchCount = 0; when_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		{
+			if (strcmp(when_knowledge_arr[searchCount].entity, entity) == 0)
+			{
+				exist = true;
+				break;
+			}
+
+			if (strcmp(when_knowledge_arr[searchCount].entity, "") == 0)
+			{
+				strcpy(when_knowledge_arr[searchCount].entity, entity);
+				strcpy(when_knowledge_arr[searchCount].response, response);
+				
+				return KB_OK;
+			}
+		}
+
+		if (exist == true)
+		{
+			strcpy(when_knowledge_arr[searchCount].entity, entity);
+			strcpy(when_knowledge_arr[searchCount].response, response);
+			
+			return KB_OK;
+		}
+	}
+	else if (compare_token(intent, "why") == 0)
+	{
+		for (searchCount = 0; why_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		{
+			if (strcmp(why_knowledge_arr[searchCount].entity, entity) == 0)
+			{
+				exist = true;
+				break;
+			}
+
+			if (strcmp(why_knowledge_arr[searchCount].entity, "") == 0)
+			{
+				strcpy(why_knowledge_arr[searchCount].entity, entity);
+				strcpy(why_knowledge_arr[searchCount].response, response);
+				
+				return KB_OK;
+			}
+		}
+
+		if (exist == true)
+		{
+			strcpy(why_knowledge_arr[searchCount].entity, entity);
+			strcpy(why_knowledge_arr[searchCount].response, response);
+			
+			return KB_OK;
+		}
+	}
+	else if (compare_token(intent, "how") == 0)
+	{
+		for (searchCount = 0; how_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		{
+			if (strcmp(how_knowledge_arr[searchCount].entity, entity) == 0)
+			{
+				exist = true;
+				break;
+			}
+
+			if (strcmp(how_knowledge_arr[searchCount].entity, "") == 0)
+			{
+				strcpy(how_knowledge_arr[searchCount].entity, entity);
+				strcpy(how_knowledge_arr[searchCount].response, response);
+				
+				return KB_OK;
+			}
+		}
+
+		if (exist == true)
+		{
+			strcpy(how_knowledge_arr[searchCount].entity, entity);
+			strcpy(how_knowledge_arr[searchCount].response, response);
+			
+			return KB_OK;
+		}
+	}
+	else
+	{
+		return KB_INVALID;
+	}
+
+	
 
 }
 
