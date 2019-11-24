@@ -259,12 +259,32 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 		if (strcmp(skippedwords + i, inv[1]) == 0)
 		{
 			//skip = 1; 
-			startentity++;
+			startentity = 2;
 			break;
 		}
 	}
 
-	int output = knowledge_get(inv[intent], inv[startentity], response, MAX_INPUT);
+	// check if entity is more than 1 word and join them into a string
+	int spacecnt = 0;
+	char entity[MAX_INPUT];
+	char test[MAX_INPUT] = " ";
+	while (inv[startentity] != NULL)
+	{
+		if (startentity == 2)
+		{
+			strcpy(entity, inv[startentity]);
+			spacecnt = 1;
+		}
+		else
+		{
+			strcat(test, inv[startentity]);
+			strcat(entity, test);
+		}
+		startentity++;
+	}
+
+	// Get answer from knowledge
+	int output = knowledge_get(inv[intent], entity, response, MAX_INPUT);
 
 	if (output == 0)
 	{
@@ -285,66 +305,7 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 		
 	}
 
-	/*if (strcmp(inv[intent], "who") == 0)
-	{
-		if (strcmp(inv[startentity], "frank") == 0)
-		{
-			snprintf(response, n, "Frank is a lectuer at SIT.");
-			return 0;
-		}
-		else if (strcmp(inv[startentity], "karin") == 0)
-		{
-			snprintf(response, n, "Karin is a lectuer at SIT.");
-			return 0;
-		}
-		else if (strcmp(inv[startentity], "steven") == 0)
-		{
-			snprintf(response, n, "Steven is a lectuer at SIT.");
-			return 0;
-		}
-	}
-	else if (strcmp(inv[intent], "what") == 0)
-	{
-		if (strcmp(inv[startentity], "frank") == 0)
-		{
-			snprintf(response, n, "Frank is a person.");
-			return 0;
-		}
-		else if (strcmp(inv[startentity], "karin") == 0)
-		{
-			snprintf(response, n, "Karin is a person.");
-			return 0;
-		}
-		else if (strcmp(inv[startentity], "steven") == 0)
-		{
-			snprintf(response, n, "Steven is a person.");
-			return 0;
-		}
-	}
-	else if (strcmp(inv[intent], "where") == 0)
-	{
-		if (strcmp(inv[startentity], "frank") == 0)
-		{
-			snprintf(response, n, "Frank should be at SIT.");
-			return 0;
-		}
-		else if (strcmp(inv[startentity], "karin") == 0)
-		{
-			snprintf(response, n, "Karin should be at SIT.");
-			return 0;
-		}
-		else if (strcmp(inv[startentity], "steven") == 0)
-		{
-			snprintf(response, n, "Steven should be at SIT.");
-			return 0;
-		}
-	}
-
-	snprintf(response, n, "I don't know \"%s\".", inv[startentity]);
-	*/
-
 	return 0;
-
 }
 
 
