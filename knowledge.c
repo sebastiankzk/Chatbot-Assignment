@@ -1,12 +1,12 @@
 /*
- * ICT1002 (C Language) Group Project, AY19 Trimester 1.
+ * ICT1002 Assignment 2, 2018-19 Trimester 2.
  *
  * This file implements the chatbot's knowledge base.
  *
  * knowledge_get() retrieves the response to a question.
  * knowledge_put() inserts a new response to a question.
  * knowledge_read() reads the knowledge base from a file.
- * knowledge_reset() erases all of the knowledge.
+ * knowledge_reset() erases all of the knowledge.i
  * kowledge_write() saves the knowledge base in a file.
  *
  * You may add helper functions as necessary.
@@ -15,15 +15,187 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+//#include <dirent.h>
 #include "chat1002.h"
-#include <windows.h>
-#include <winbase.h>
+
+
+/* knowledge base structure */
+typedef struct node {
+	char entity[MAX_ENTITY];
+	char response[MAX_RESPONSE];
+	struct node* next;
+} KB_NODE;
+
+KB_NODE* whatListHead = NULL;
+KB_NODE* whoListHead = NULL;
+KB_NODE* whereListHead = NULL;
+KB_NODE* whenListHead = NULL;
+KB_NODE* whyListHead = NULL;
+KB_NODE* howListHead = NULL;
 
 
 
 
 
-//char *section[10] = {"Who", "What", "When", "Where", "Why", "How"};
+KB_NODE* create(char* entity, char* response)
+{
+	//make a new node
+	KB_NODE* new_node = (KB_NODE*)malloc(sizeof(KB_NODE));
+	//checks if the new node is make if not it be null
+	if (new_node == NULL)
+	{
+		printf("Error creating a new node.\n");
+		//to end the program if it fails to make a node
+		exit(0);
+	}
+	//copy the entered string into the new node
+	strcpy(new_node->entity, entity);
+	//sets the node to point to the next one in this case Null
+	strcpy(new_node->response, response);
+	
+	new_node->next = NULL;
+	return new_node;
+}
+
+/* creates the head of the linked list */
+KB_NODE* makefirst(KB_NODE* head, char* data, char* response)
+{
+	//make a node for the list
+	KB_NODE* new_node = create(data, response);
+	//set it as the head of the list
+	head = new_node;
+	return head;
+}
+
+
+/* for knowledge_read */
+KB_NODE* append(KB_NODE* head, char* data, char* response)
+{
+	// create the head of the linklist if no head is found
+	if (head == NULL) {
+		head = makefirst(head, data, response);
+		return head;
+	}
+	/* go to the last node */
+	KB_NODE* currentNode = head;
+	KB_NODE* found = NULL;
+	while (currentNode != NULL) {
+		if (compare_token(currentNode->entity, data) == 0) {
+			strcpy(currentNode->response, response);
+			found = currentNode;
+			break;
+		}
+		currentNode = currentNode->next;
+	}
+
+
+	if (found == NULL) {
+		KB_NODE* cursor = head;
+		while (cursor->next != NULL)
+			cursor = cursor->next;
+		/* create a new node */
+		KB_NODE* new_node = create(data, response);
+		//sets the current node to point to the next one on the list
+		cursor->next = new_node;
+	}
+	return head;
+}
+
+
+// find if there is a response for the given intent and entity
+KB_NODE* findinlinkedlist(KB_NODE* listhead, const char* entity, int n)
+{
+	KB_NODE* temp = listhead;
+
+	//check if list is empty
+	if (temp == NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		while (temp->next != NULL)
+		{
+			// if the entity matches return the expected response
+			if (compare_token(entity, temp->entity) == 0)
+			{
+				KB_NODE* returnvalue = (KB_NODE*)malloc(sizeof(KB_NODE));
+				memcpy(returnvalue->entity, temp->entity, MAX_ENTITY);
+				memcpy(returnvalue->response, temp->response, n);
+				return returnvalue;
+
+			}
+			else
+			{
+				temp = temp->next;
+			}
+
+		}
+
+		// check the last node
+		if (temp->next == NULL)
+		{
+			if (compare_token(entity, temp->entity) == 0)
+			{
+				KB_NODE* returnvalue = (KB_NODE*)malloc(sizeof(KB_NODE));
+
+				memcpy(returnvalue->entity, temp->entity, MAX_ENTITY);
+				memcpy(returnvalue->response, temp->response, n);
+
+				return returnvalue;
+			}
+			else
+			{
+				// if all of the above checks fail. Means the node is not found. Returns NULL.
+				return NULL;
+			}
+		}
+	}
+}
+
+
+KB_NODE* insertnode(KB_NODE* listhead, KB_NODE* newnode)
+{
+	// check if first node empty
+	if (listhead == NULL)
+	{
+		return newnode;
+	}
+
+	// check if theres a 2nd node
+	else if (listhead->next == NULL)
+	{
+		// if the entities are the same replace head response with new response
+		{
+			listhead->next = newnode;
+			newnode->next = NULL;
+			return listhead;
+		}
+	}
+
+	// if there is a 2nd node
+	else if (listhead->next != NULL)
+	{
+		KB_NODE* temp = listhead;
+
+		while (temp->next != NULL)
+		{
+			if (strcmp(temp->entity, newnode->entity) == 0)
+			{
+				strcpy(temp->response, newnode->response);
+				return listhead;
+			}
+			else
+			{
+				newnode->next = listhead;
+				return newnode;
+			}
+			temp = temp->next;
+		}
+	}
+}
+
+
 
 /*
  * Get the response to a question.
@@ -39,83 +211,109 @@
  *   KB_NOTFOUND, if no response could be found
  *   KB_INVALID, if 'intent' is not a recognised question word
  */
-int knowledge_get(const char* intent, const char* entity, char* response, int n) {
+int knowledge_get(const char* intent, const char* entity, char* response, int n)
+{
 
-	
-	///*intent not found*/
-	//for (int i = 0; i < 6; i++)
-	//{
-	//	
-	//}
+	KB_NODE* temp = NULL;
 
+	// compare to check intent
 	if (compare_token(intent, "who") == 0)
 	{
-		for (int i = 0; i < 255; i++) 
+		if (entity == NULL)
 		{
-			if (compare_token(who_knowledge_arr[i].entity, entity) == 0)
-			{
-				snprintf(response, n, who_knowledge_arr[i].response);
-				return KB_OK;
-			}
+			return KB_INVALID;
+		}
+		else
+		{
+			//loop through what linked list
+			temp = findinlinkedlist(whoListHead, entity, n);			
+			//return KB_OK;
 		}
 	}
 	else if (compare_token(intent, "what") == 0)
 	{
-		for (int i = 0; i < 255; i++)
+		if (entity == NULL)
 		{
-			if (compare_token(what_knowledge_arr[i].entity, entity) == 0)
-			{
-				snprintf(response, n, what_knowledge_arr[i].response);
-				return KB_OK;
-			}
+			return KB_INVALID;
+		}
+		else
+		{
+			//loop through where linked list
+			temp = findinlinkedlist(whatListHead, entity, n);
 		}
 	}
+
 	else if (compare_token(intent, "when") == 0)
 	{
-		for (int i = 0; i < 255; i++)
+		if (entity == NULL)
 		{
-			if (compare_token(when_knowledge_arr[i].entity, entity) == 0)
-			{
-				snprintf(response, n, when_knowledge_arr[i].response);
-				return KB_OK;
-			}
+			return KB_INVALID;
+		}
+		else
+		{
+			//loop through who linked list
+			temp = findinlinkedlist(whenListHead, entity, n);
 		}
 	}
+
 	else if (compare_token(intent, "where") == 0)
 	{
-		for (int i = 0; i < 255; i++)
+		if (entity == NULL)
 		{
-			if (compare_token(where_knowledge_arr[i].entity, entity) == 0)
-			{
-				snprintf(response, n, where_knowledge_arr[i].response);
-				return KB_OK;
-			}
+			return KB_INVALID;
+		}
+		else
+		{
+			//loop through who linked list
+			temp = findinlinkedlist(whereListHead, entity, n);
 		}
 	}
+
 	else if (compare_token(intent, "why") == 0)
 	{
-		for (int i = 0; i < 255; i++)
+		if (entity == NULL)
 		{
-			if (compare_token(why_knowledge_arr[i].entity, entity) == 0)
-			{
-				snprintf(response, n, why_knowledge_arr[i].response);
-				return KB_OK;
-			}
+			return KB_INVALID;
+		}
+		else
+		{
+			//loop through who linked list
+			temp = findinlinkedlist(whyListHead, entity, n);
 		}
 	}
+
 	else if (compare_token(intent, "how") == 0)
 	{
-		for (int i = 0; i < 255; i++)
+		if (entity == NULL)
 		{
-			if (compare_token(how_knowledge_arr[i].entity, entity) == 0)
-			{
-				snprintf(response, n, how_knowledge_arr[i].response);
-				return KB_OK;
-			}
+			return KB_INVALID;
+		}
+		else
+		{
+			//loop through who linked list
+			temp = findinlinkedlist(howListHead, entity, n);
 		}
 	}
-	/* Based on this return input call KNOWLEDGE_PUT HERE */
-	return KB_NOTFOUND;
+	else
+	{
+		// ans is invalid
+		return KB_INVALID;
+	}
+
+	// if temp is still NULL after the checks, then it is not found in the knowledge List
+	if (temp == NULL)
+	{
+		// ans is not found
+		return KB_NOTFOUND;
+	}
+	else
+	{
+		//ans is found
+		char* buffer;
+		buffer = strtok(temp->response, "\n");
+		snprintf(response, n, "%s", buffer);
+		return KB_OK;
+	}
 }
 
 
@@ -137,178 +335,110 @@ int knowledge_get(const char* intent, const char* entity, char* response, int n)
 int knowledge_put(const char* intent, const char* entity, const char* response) {
 
 	/* to be implemented */
-	int searchCount = 0;
-	bool exist = false;
-	response = strtok(response, "\n");
 
+	// compare to check intent
 	if (compare_token(intent, "who") == 0)
 	{
-		for (searchCount = 0; who_knowledge_arr[searchCount].entity != NULL; searchCount++)
-		{
-			if (strcmp(who_knowledge_arr[searchCount].entity, entity) == 0)
-			{
-				exist = true;
-				break;
-			}
 
-			if (strcmp(who_knowledge_arr[searchCount].entity, "") == 0)
-			{
-				strcpy(who_knowledge_arr[searchCount].entity, entity);
-				strcpy(who_knowledge_arr[searchCount].response, response);
-				
-				return KB_OK;
-			}
+		KB_NODE* newnode = create(entity, response);
+		// check if newnode is null then return error
+		if (newnode == NULL)
+		{
+			return KB_NOMEM;
 		}
-
-		if (exist == true)
+		else
 		{
-			strcpy(who_knowledge_arr[searchCount].entity, entity);
-			strcpy(who_knowledge_arr[searchCount].response, response);
-			
+			whoListHead = insertnode(whoListHead, newnode);
 			return KB_OK;
 		}
 	}
+
 	else if (compare_token(intent, "what") == 0)
 	{
-		for (searchCount = 0; what_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		KB_NODE* newnode = create(entity, response);
+		// check if newnode is null then return error
+		if (newnode == NULL)
 		{
-			if (strcmp(what_knowledge_arr[searchCount].entity, entity) == 0)
-			{
-				exist = true;
-				break;
-			}
-
-			if (strcmp(what_knowledge_arr[searchCount].entity, "") == 0)
-			{
-				strcpy(what_knowledge_arr[searchCount].entity, entity);
-				strcpy(what_knowledge_arr[searchCount].response, response);
-				
-				return KB_OK;
-			}
+			return KB_NOMEM;
 		}
-
-		if (exist == true)
+		else
 		{
-			strcpy(what_knowledge_arr[searchCount].entity, entity);
-			strcpy(what_knowledge_arr[searchCount].response, response);
-			
+			whatListHead = insertnode(whatListHead, newnode);
 			return KB_OK;
 		}
-	}
-	else if (compare_token(intent, "where") == 0)
-	{
-		for (searchCount = 0; where_knowledge_arr[searchCount].entity != NULL; searchCount++)
-		{
-			if (strcmp(where_knowledge_arr[searchCount].entity, entity) == 0)
-			{
-				exist = true;
-				break;
-			}
 
-			if (strcmp(where_knowledge_arr[searchCount].entity, "") == 0)
-			{
-				strcpy(where_knowledge_arr[searchCount].entity, entity);
-				strcpy(where_knowledge_arr[searchCount].response, response);
-				
-				return KB_OK;
-			}
-		}
-
-		if (exist == true)
-		{
-			strcpy(where_knowledge_arr[searchCount].entity, entity);
-			strcpy(where_knowledge_arr[searchCount].response, response);
-			
-			return KB_OK;
-		}
 	}
+
 	else if (compare_token(intent, "when") == 0)
 	{
-		for (searchCount = 0; when_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		KB_NODE* newnode = create(entity, response);
+		// check if newnode is null then return error
+		if (newnode == NULL)
 		{
-			if (strcmp(when_knowledge_arr[searchCount].entity, entity) == 0)
-			{
-				exist = true;
-				break;
-			}
-
-			if (strcmp(when_knowledge_arr[searchCount].entity, "") == 0)
-			{
-				strcpy(when_knowledge_arr[searchCount].entity, entity);
-				strcpy(when_knowledge_arr[searchCount].response, response);
-				
-				return KB_OK;
-			}
+			return KB_NOMEM;
 		}
-
-		if (exist == true)
+		else
 		{
-			strcpy(when_knowledge_arr[searchCount].entity, entity);
-			strcpy(when_knowledge_arr[searchCount].response, response);
-			
+			whenListHead = insertnode(whenListHead, newnode);
 			return KB_OK;
 		}
+
 	}
+
+	else if (compare_token(intent, "where") == 0)
+	{
+		KB_NODE* newnode = create(entity, response);
+		// check if newnode is null then return error
+		if (newnode == NULL)
+		{
+			return KB_NOMEM;
+		}
+		else
+		{
+			whereListHead = insertnode(whereListHead, newnode);
+			return KB_OK;
+		}
+
+	}
+
 	else if (compare_token(intent, "why") == 0)
 	{
-		for (searchCount = 0; why_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		KB_NODE* newnode = create(entity, response);
+		// check if newnode is null then return error
+		if (newnode == NULL)
 		{
-			if (strcmp(why_knowledge_arr[searchCount].entity, entity) == 0)
-			{
-				exist = true;
-				break;
-			}
-
-			if (strcmp(why_knowledge_arr[searchCount].entity, "") == 0)
-			{
-				strcpy(why_knowledge_arr[searchCount].entity, entity);
-				strcpy(why_knowledge_arr[searchCount].response, response);
-				
-				return KB_OK;
-			}
+			return KB_NOMEM;
 		}
-
-		if (exist == true)
+		else
 		{
-			strcpy(why_knowledge_arr[searchCount].entity, entity);
-			strcpy(why_knowledge_arr[searchCount].response, response);
-			
+			whyListHead = insertnode(whyListHead, newnode);
 			return KB_OK;
 		}
+
 	}
+
 	else if (compare_token(intent, "how") == 0)
 	{
-		for (searchCount = 0; how_knowledge_arr[searchCount].entity != NULL; searchCount++)
+		KB_NODE* newnode = create(entity, response);
+		// check if newnode is null then return error
+		if (newnode == NULL)
 		{
-			if (strcmp(how_knowledge_arr[searchCount].entity, entity) == 0)
-			{
-				exist = true;
-				break;
-			}
-
-			if (strcmp(how_knowledge_arr[searchCount].entity, "") == 0)
-			{
-				strcpy(how_knowledge_arr[searchCount].entity, entity);
-				strcpy(how_knowledge_arr[searchCount].response, response);
-				
-				return KB_OK;
-			}
+			return KB_NOMEM;
 		}
-
-		if (exist == true)
+		else
 		{
-			strcpy(how_knowledge_arr[searchCount].entity, entity);
-			strcpy(how_knowledge_arr[searchCount].response, response);
-			
+			howListHead = insertnode(howListHead, newnode);
 			return KB_OK;
 		}
+
 	}
 	else
 	{
+		// if what/where/who are not met, return invalid.
 		return KB_INVALID;
 	}
 
-	
+
 
 }
 
@@ -322,136 +452,84 @@ int knowledge_put(const char* intent, const char* entity, const char* response) 
  * Returns: the number of entity/response pairs successful read from the file
  */
 int knowledge_read(FILE* f) {
+	int dict = 0;
+	int count = 0;
 
-	/* to be implemented */
-	char buff[255];
-	int intelligence = 0;
-	char current_intent[MAX_INTENT];
-	char current_entity[MAX_ENTITY];
-	char current_response[MAX_RESPONSE];
+	char line[2 + MAX_ENTITY + MAX_RESPONSE];
 
-	int cnt = 0;
-	char* token;
+	while (fgets(line, 2 + MAX_ENTITY + MAX_RESPONSE, f) != NULL)
+	{
 
-	while (fgets(buff, 255, (FILE*)f) != NULL) {
-		/* get true length of string */
-		int len = strlen(buff) - 1;
-		buff[len] = '\0';
-
-		/* check for intent brackets -> [ ] */
-		if (buff[0] == '[' && buff[len - 1] == ']')
-		{
-			//printf("%d ", strlen(buff));
-
-			if (strcmp(buff, "[where]") == 0) {
-				strcpy(current_intent, "where\0");
-				printf("%s ", current_intent); // test print
-				cnt = 0;
-			}
-			else if (strcmp(buff, "[what]") == 0) {
-				strcpy(current_intent, "what\0");
-				printf("%s ", current_intent); // test print
-				cnt = 0;
-			}
-			else if (strcmp(buff, "[when]") == 0) {
-				strcpy(current_intent, "when\0");
-				printf("%s ", current_intent); // test print
-				cnt = 0;
-			}
-			else if (strcmp(buff, "[who]") == 0) {
-				strcpy(current_intent, "who\0");
-				printf("%s ", current_intent); // test print
-				cnt = 0;
-			}
-			else if (strcmp(buff, "[why]") == 0) {
-				strcpy(current_intent, "why\0");
-				printf("%s ", current_intent); // test print
-				cnt = 0;
-			}
-			else if (strcmp(buff, "[how]") == 0) {
-				strcpy(current_intent, "how\0");
-				printf("%s ", current_intent); // test print
-				cnt = 0;
-			}
-
-			printf("%s\n", buff);
-
+		/* ignore blank lines */
+		if (line[0] == '#' || line[0] == '\n') {
+			continue;
 		}
-		//else if (isalpha(buff[0]))
-		else if (strchr(buff, '=') != NULL)
+
+		/* check for bracket lines such as "[who]" */
+		if (strchr(line, '[') != NULL && strchr(line, ']') != NULL) {
+
+			if (strstr(line, "who")) {
+				dict = 1;
+			}
+			else if (strstr(line, "what")) {
+				dict = 2;
+			}
+			else if (strstr(line, "when")) {
+				dict = 3;
+			}
+			else if (strstr(line, "where")) {
+				dict = 4;
+			}
+			else if (strstr(line, "why")) {
+				dict = 5;
+			}
+			else if (strstr(line, "how")) {
+				dict = 6;
+			}
+			else { dict = 0; }
+		}
+		else if (dict != 0 && strchr(line, '=') != NULL) 
 		{
-			//printf("%s\n%s\n", current_intent, buff);
-			token = strtok(buff, "=");
-			strcpy(current_entity, token);
+			/* seperate the entity and response from the line */
+			char* entity = strtok(line, "=");
+			char* response = strtok(NULL, "=");
 
-			token = strtok(NULL, "=");
-			strcpy(current_response, token);
+			//depending on dictionary it will put the LL_NODE in the linklist for the type of question
+			switch(dict)
+			{
+				case 1:
+					whoListHead = append(whoListHead, entity, response);
+					break;
 
-			if (compare_token(current_intent, "who") == 0) {
-				printf("I put in who");
+				case 2:
+					whatListHead = append(whatListHead, entity, response);
+					break;
 
-				//who_knowledge_arr[cnt].entity = current_entity;
-				//who_knowledge_arr[cnt].response = current_response;
-				strcpy(who_knowledge_arr[cnt].entity, current_entity);
-				strcpy(who_knowledge_arr[cnt].response, current_response);
+				case 3:
+					whenListHead = append(whenListHead, entity, response);
+					break;
 
-			}
-			else if (compare_token(current_intent, "what") == 0) {
-				printf("I put in what");
+				case 4:
+					whereListHead = append(whereListHead, entity, response);
+					break;
 
-				//what_knowledge_arr[cnt].entity = current_entity;
-				//what_knowledge_arr[cnt].response = current_response;
-				strcpy(what_knowledge_arr[cnt].entity, current_entity);
-				strcpy(what_knowledge_arr[cnt].response, current_response);
+				case 5:
+					whyListHead = append(whyListHead, entity, response);
+					break;
 
-			}
-			else if (compare_token(current_intent, "when") == 0) {
-				printf("I put in when");
-
-				//when_knowledge_arr[cnt].entity = current_entity;
-				//when_knowledge_arr[cnt].response = current_response;
-				strcpy(when_knowledge_arr[cnt].entity, current_entity);
-				strcpy(when_knowledge_arr[cnt].response, current_response);
-
-			}
-			else if (compare_token(current_intent, "where") == 0) {
-				printf("I put in where");
-
-				//where_knowledge_arr[cnt].entity = current_entity;
-				//where_knowledge_arr[cnt].response = current_response;
-				strcpy(where_knowledge_arr[cnt].entity, current_entity);
-				strcpy(where_knowledge_arr[cnt].response, current_response);
-
-			}
-			else if (compare_token(current_intent, "why") == 0) {
-				printf("I put in why");
-
-				//why_knowledge_arr[cnt].entity = current_entity;
-				//why_knowledge_arr[cnt].response = current_response;
-				strcpy(why_knowledge_arr[cnt].entity, current_entity);
-				strcpy(why_knowledge_arr[cnt].response, current_response);
-
-			}
-			else if (compare_token(current_intent, "how") == 0) {
-				printf("I put in how");
-
-				//how_knowledge_arr[cnt].entity = current_entity;
-				//how_knowledge_arr[cnt].response = current_response;
-				strcpy(how_knowledge_arr[cnt].entity, current_entity);
-				strcpy(how_knowledge_arr[cnt].response, current_response);
-
+				case 6:
+					howListHead = append(howListHead, entity, response);
+					break;
 			}
 
-			printf("%s\t%s\n", who_knowledge_arr[intelligence].entity, who_knowledge_arr[intelligence].response);
-			//printf("%s\n", current_intent);
-			cnt++; // for file cnt
-			intelligence++;
+
+			/* count number of lines read */
+			count++;
 		}
 
 	}
 
-	return intelligence;
-
+	return count;
 }
 
 
@@ -459,8 +537,47 @@ int knowledge_read(FILE* f) {
  * Reset the knowledge base, removing all know entitities from all intents.
  */
 void knowledge_reset() {
+	KB_NODE* tmp;
+	//emptys and free the list from memory
+	while (whoListHead != NULL)
+	{
+		tmp = whoListHead->next;
+		free(whoListHead);
+		whoListHead = tmp;
+	}
+	while (whatListHead != NULL)
+	{
+		tmp = whatListHead->next;
+		free(whatListHead);
+		whatListHead = tmp;
+	}
 
-	/* to be implemented */
+	while (whenListHead != NULL)
+	{
+		tmp = whenListHead->next;
+		free(whenListHead);
+		whenListHead = tmp;
+	}
+
+	while (whereListHead != NULL)
+	{
+		tmp = whereListHead->next;
+		free(whereListHead);
+		whereListHead = tmp;
+	}
+	
+	while (whyListHead != NULL)
+	{
+		tmp = whyListHead->next;
+		free(whyListHead);
+		whyListHead = tmp;
+	}
+	while (howListHead != NULL)
+	{
+		tmp = howListHead->next;
+		free(howListHead);
+		howListHead = tmp;
+	}
 
 }
 
@@ -472,46 +589,71 @@ void knowledge_reset() {
  *   f - the file
  */
 void knowledge_write(FILE* f) {
-	int i;
+	KB_NODE* printed = whoListHead;
+	char newline[MAX_ENTITY + MAX_RESPONSE + 2];
+	char entity[MAX_ENTITY];
+	char response[MAX_RESPONSE];
+	//prints the who section
+	fprintf(f, "%s\n", "[who]");
+	while (printed != NULL)
+	{
+		memcpy(entity, printed->entity, strlen(printed->entity) + 1);
+		memcpy(response, printed->response, strlen(printed->response) + 1);
+		fprintf(f, "%s%c%s", entity, '=', response);
+		printed = printed->next;
+	}
+	//prints the what section
+	printed = whatListHead;
+	fprintf(f, "%s", "\n[what]\n");
+	while (printed != NULL)
+	{
+		memcpy(entity, printed->entity, strlen(printed->entity) + 1);
+		memcpy(response, printed->response, strlen(printed->response) + 1);
+		fprintf(f, "%s%c%s", entity, '=', response);
+		printed = printed->next;
+	}
+
+	printed = whenListHead;
+	fprintf(f, "%s", "\n[when]\n");
+	while (printed != NULL)
+	{
+		memcpy(entity, printed->entity, strlen(printed->entity) + 1);
+		memcpy(response, printed->response, strlen(printed->response) + 1);
+		fprintf(f, "%s%c%s", entity, '=', response);
+		printed = printed->next;
+	}
+
+	//prints the where section
+	printed = whereListHead;
+	fprintf(f, "%s", "\n[where]\n");
+	while (printed != NULL)
+	{
+		memcpy(entity, printed->entity, strlen(printed->entity) + 1);
+		memcpy(response, printed->response, strlen(printed->response) + 1);
+		fprintf(f, "%s%c%s", entity, '=', response);
+		printed = printed->next;
+	}
+
+	printed = whyListHead;
+	fprintf(f, "%s", "\n[why]\n");
+	while (printed != NULL)
+	{
+		memcpy(entity, printed->entity, strlen(printed->entity) + 1);
+		memcpy(response, printed->response, strlen(printed->response) + 1);
+		fprintf(f, "%s%c%s", entity, '=', response);
+		printed = printed->next;
+	}
+
+	printed = howListHead;
+	fprintf(f, "%s", "\n[how]\n");
+	while (printed != NULL)
+	{
+		memcpy(entity, printed->entity, strlen(printed->entity) + 1);
+		memcpy(response, printed->response, strlen(printed->response) + 1);
+		fprintf(f, "%s%c%s", entity, '=', response);
+		printed = printed->next;
+	}
 	
-	if (what_knowledge_arr != NULL)
-	{
-		i = 0;
-		fprintf(f, "[what]\n");	// print the header of what
-		
-		while (compare_token(what_knowledge_arr[i].entity, "") != 0)
-		{
-			fprintf(f, "%s=%s\n", what_knowledge_arr[i].entity, what_knowledge_arr[i].response);
-			i++;
-		}
-		fprintf(f, "\n");
-	}
 
-	if (when_knowledge_arr != NULL)
-	{
-		i = 0;
-		fprintf(f, "[where]\n");	// print the header of what
-		while (compare_token(where_knowledge_arr[i].entity, "") != 0)
-		{
-			fprintf(f, "%s=%s\n", where_knowledge_arr[i].entity, where_knowledge_arr[i].response);
-			i++;
-		}
-
-		fprintf(f, "\n");
-	}
-
-	if (who_knowledge_arr != NULL)
-	{
-		int i = 0;
-		fprintf(f, "[who]\n");	// print the header of what
-		while (compare_token(who_knowledge_arr[i].entity, "") != 0)
-		{
-			fprintf(f, "%s=%s\n", who_knowledge_arr[i].entity, who_knowledge_arr[i].response);
-			i++;
-		}
-
-	}
-
-	/* to be implemented */
-
+	
 }

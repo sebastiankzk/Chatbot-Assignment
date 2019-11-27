@@ -126,7 +126,7 @@ int chatbot_main(int inc, char* inv[], char* response, int n) {
  */
 int chatbot_is_exit(const char* intent) {
 
-	/* chatbot_do_exit will invoke as long as one of the compare_token returns 0, (0 == 0 = 1), 1 OR 'anything' will be 1 */
+	/* chatbot_do_exit will invoke as long as one of the compare_token returns 0 */
 	return compare_token(intent, "exit") == 0 || compare_token(intent, "quit") == 0;
 
 }
@@ -143,7 +143,6 @@ int chatbot_is_exit(const char* intent) {
  */
 int chatbot_do_exit(int inc, char* inv[], char* response, int n) {
 
-	/* edit this to change chatbot response when you quit */
 	snprintf(response, n, "Goodbye!");
 
 	return 1;
@@ -163,9 +162,7 @@ int chatbot_do_exit(int inc, char* inv[], char* response, int n) {
  */
 int chatbot_is_load(const char* intent) {
 
-	/* to be implemented */
-
-	/* chatbot_do_load will invoke if compare_token returns 0, (0 == 0) = 1 */
+	/* chatbot_do_load will invoke if compare_token returns 0 */
 	return compare_token(intent, "load") == 0;
 
 }
@@ -181,19 +178,34 @@ int chatbot_is_load(const char* intent) {
  *   0 (the chatbot always continues chatting after loading knowledge)
  */
 int chatbot_do_load(int inc, char* inv[], char* response, int n) {
+	
+	/* First check whether user has entered a filename */
+	if (inv[1] == NULL) 
+	{
+		snprintf(response, n, "Please enter a filename.");
 
-	/* to be implemented */
-	int botintel = 0; // to store how many entity responses loaded from ini file
-
-	//FILE* fp = fopen(inv[1], "r"); // supposed to be this
-	FILE* fp = fopen("sample.ini", "r");// hard code first while testing, change name of user
-	if (fp != NULL) {
-		botintel = knowledge_read(fp);
-		fclose(fp);
+		return 0;
 	}
+	else 
+	{
+		/* Open file according to given file name, 2nd parameter of user input which is index 1 of inv */
+		FILE* fp = fopen(inv[1], "r");
 
-	/* test ini file has 11 lines of entity responses */
-	snprintf(response, n, "Read %d responses from %s.", botintel, inv[1]);
+		if (fp != NULL)
+		{
+			/* variable to store number of lines read from file, knowledge_read returns it */
+			int botintel = knowledge_read(fp);
+
+			snprintf(response, n, "Read %d responses from %s.", botintel, inv[1]);
+
+			fclose(fp);
+		}
+		else 
+		{
+			snprintf(response, n, "File not found, does your filename exist?");
+		}
+
+	}
 
 	return 0;
 
@@ -212,24 +224,15 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
  */
 int chatbot_is_question(const char* intent) {
 
-	// Retrieve all sections from INI file
-	char INISection[256];
-	GetPrivateProfileSectionNames(INISection, MAX_INPUT, INIAddress);
+	/* check for who, what, when, where, why, how, do_question will invoke if any of the compare_token returns 0 */
+	return 
+		compare_token(intent, "what") == 0 ||
+		compare_token(intent, "where") == 0 ||
+		compare_token(intent, "who") == 0 ||
+		compare_token(intent, "when") == 0 ||
+		compare_token(intent, "why") == 0 ||
+		compare_token(intent, "how") == 0;
 
-	// Loop through array to retrieve each section
-	char* section = INISection;
-	while (*section) {
-
-		// Check if intent exists
-		if (compare_token(intent, section) == 0)
-		{
-			return 1;
-		}
-		section = strchr(section, '\0');
-		section++;
-	}
-
-	return 0;
 }
 
 
@@ -248,66 +251,80 @@ int chatbot_is_question(const char* intent) {
  */
 int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 
-	const char skippedwords[4][5] = { "is", "are", "was", "were" };
-	//bool skip = 0;
-	int intent = 0;
-	int startentity = 1;
-
-	// Check if 2nd word is a filler word
-	for (int i = 0; i < inc; i++)
+	/* first check if words in the question is bigger than 1, which is 2 onwards */
+	if (inc > 1)
 	{
-		if (strcmp(skippedwords + i, inv[1]) == 0)
+		char input_buffer[MAX_INPUT];
+
+		/* check first parameter for intent first */
+		if (compare_token(inv[0], "what") == 0 || compare_token(inv[0], "where") == 0 || compare_token(inv[0], "who") == 0 || compare_token(inv[0], "when") == 0 || compare_token(inv[0], "why") == 0 || compare_token(inv[0], "how") == 0)
 		{
-			//skip = 1; 
-			startentity = 2;
-			break;
+
+			/* check second parameter for skipped words */
+			if (compare_token(inv[1], "is") == 0 || compare_token(inv[1], "are") == 0 || compare_token(inv[1], "was") == 0 || compare_token(inv[1], "were") == 0)
+			{
+				/* third parameter onwards is considered entities */
+				char join_buffer[MAX_ENTITY] = "";
+
+				/* for loop to join multiple words entity */
+				for (int i = 2; i < inc; i++)
+				{
+					if (strcmp(join_buffer, "") == 0)
+					{
+						strcpy(join_buffer, inv[i]);
+					}
+					else
+					{
+						strcat(join_buffer, " ");
+						strcat(join_buffer, inv[i]);
+					}
+				}
+
+				/*Search for entity in the relevant knowledge list and return the answer*/
+				if (knowledge_get(inv[0], join_buffer, response, n) == KB_OK)
+				{					
+					return 0;
+				}
+				else if (knowledge_get(inv[0], join_buffer, response, n) == KB_NOTFOUND)
+				{
+					printf("%s: I dont know %s. %s is %s?\n", chatbot_botname(), join_buffer, inv[0], join_buffer);
+					printf("%s:", chatbot_username());
+					fgets(input_buffer, n, stdin);
+
+					//check if the user pressed enter instead of replying a answer
+					if (input_buffer[0] == '\n' || input_buffer[0] == ' ')
+					{
+
+						snprintf(response, n, "I do not understand your answer. Please try again!");
+						return 0;
+					}
+					else
+					{
+						snprintf(response, n, "Thank you");
+						return (knowledge_put(inv[0], join_buffer, input_buffer));
+					}
+
+				}
+				else if (knowledge_get(inv[0], join_buffer, response, n) == KB_INVALID)
+				{
+					snprintf(response, n, "I dont see a question. Please ask again");
+
+					return 0;
+				}
+			}
+
+			else
+			{
+				snprintf(response, n, "Please ask a question in proper english.");
+			}
+			
 		}
-	}
-
-	// check if entity is more than 1 word and join them into a string
-	int spacecnt = 0;
-	char entity[MAX_INPUT];
-	char test[MAX_INPUT] = " ";
-	while (inv[startentity] != NULL)
-	{
-		if (startentity == 2)
-		{
-			strcpy(entity, inv[startentity]);
-			spacecnt = 1;
-		}
-		else
-		{
-			strcat(test, inv[startentity]);
-			strcat(entity, test);
-		}
-		startentity++;
-	}
-
-	// Get answer from knowledge
-	int output = knowledge_get(inv[intent], entity, response, MAX_INPUT);
-
-	if (output == 0)
-	{
-
 	}
 	else
 	{
-		char buffer[MAX_INPUT];
-		//snprintf(response, n, "I don't understand what you said");
-		printf("%s: I don't know \"%s\", can you tell me about it?.\n",chatbot_botname() ,inv[startentity]);
-		printf("%s: ", chatbot_username());
-		fgets(buffer, MAX_INPUT, stdin);
-		if (strcmp(buffer, "\n") != 0)
-		{
-			knowledge_put(inv[intent], inv[startentity], buffer);
-			snprintf(response, n, "Thank You.");
-		}
-		else
-		{
-			snprintf(response, n, "Ok then, what else is on your mind?");
-		}
-		
+		snprintf(response, n, "I do not understand your question");
 	}
+
 
 	return 0;
 }
@@ -325,9 +342,7 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
  */
 int chatbot_is_reset(const char* intent) {
 
-	/* to be implemented */
-
-	/* chatbot_do_reset will invoke if compare_token returns 0, (0 == 0) = 1 */
+	/* chatbot_do_reset will invoke if compare_token returns 0 */
 	return compare_token(intent, "reset") == 0;
 
 }
@@ -344,7 +359,6 @@ int chatbot_is_reset(const char* intent) {
  */
 int chatbot_do_reset(int inc, char* inv[], char* response, int n) {
 
-	/* to be implemented */
 	knowledge_reset();
 	snprintf(response, n, "Chatbot reset.");
 
@@ -364,11 +378,6 @@ int chatbot_do_reset(int inc, char* inv[], char* response, int n) {
  *  0, otherwise
  */
 int chatbot_is_save(const char* intent) {
-
-	/* to be implemented */
-	
-	
-
 
 	/* chatbot_do_save will invoke if compare_token returns 0 */
 	return compare_token(intent, "save") == 0;
@@ -406,6 +415,7 @@ int chatbot_do_save(int inc, char* inv[], char* response, int n) {
 	knowledge_write(fp);
 	snprintf(response, n, "My knowledge has been saved to %s.", filename);
 	fclose(fp);
+
 	return 0;
 }
 
@@ -485,4 +495,3 @@ int chatbot_do_smalltalk(int inc, char* inv[], char* response, int n) {
 	}
 
 }
-  
