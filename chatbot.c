@@ -96,8 +96,8 @@ int chatbot_main(int inc, char* inv[], char* response, int n) {
 	/* look for an intent and invoke the corresponding do_* function */
 	if (chatbot_is_exit(inv[0]))
 		return chatbot_do_exit(inc, inv, response, n);
-	else if (chatbot_is_smalltalk(inv[0]))
-		return chatbot_do_smalltalk(inc, inv, response, n);
+//	else if (chatbot_is_smalltalk(inv[0]))
+//		return chatbot_do_smalltalk(inc, inv, response, n);
 	else if (chatbot_is_load(inv[0]))
 		return chatbot_do_load(inc, inv, response, n);
 	else if (chatbot_is_question(inv[0]))
@@ -107,8 +107,9 @@ int chatbot_main(int inc, char* inv[], char* response, int n) {
 	else if (chatbot_is_save(inv[0]))
 		return chatbot_do_save(inc, inv, response, n);
 	else {
-		snprintf(response, n, "I don't understand \"%s\".", inv[0]);
-		return 0;
+		//snprintf(response, n, "I don't understand \"%s\".", inv[0]);
+		//return 0;
+		return chatbot_do_smalltalk(inc, inv, response, n);
 	}
 
 }
