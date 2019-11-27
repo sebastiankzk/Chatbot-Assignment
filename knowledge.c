@@ -1,5 +1,5 @@
 /*
- * ICT1002 Assignment 2, 2018-19 Trimester 2.
+ * ICT1002 (C Language) Group Project, AY19 Trimester 1.
  *
  * This file implements the chatbot's knowledge base.
  *
