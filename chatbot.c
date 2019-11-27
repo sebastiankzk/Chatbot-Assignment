@@ -431,17 +431,23 @@ int chatbot_do_save(int inc, char* inv[], char* response, int n) {
  *  1, if the intent is the first word of one of the smalltalk phrases
  *  0, otherwise
  */
+
 int chatbot_is_smalltalk(const char* intent) {
-
-	/* to be implemented */
-	return
-		compare_token(intent, "hello") == 0 ||
-		compare_token(intent, "hi") == 0 ||
-		compare_token(intent, "good") == 0 ||
-		compare_token(intent, "hey") == 0;
-
+	/* to be implemented */	
+	if (compare_token(intent, "reset") == 0 || compare_token(intent, "save") || compare_token(intent, "load") || compare_token(intent, "who")
+		|| compare_token(intent, "what") || compare_token(intent, "where"))
+		return 0;
+	else
+		return 1;
 }
 
+struct smalltalklist {
+	char input[64];
+	char response[2][255];
+	struct smalltalklist* next;
+}*head;
+typedef struct smalltalklist SMALLTALKLIST;
+typedef SMALLTALKLIST* SMALLPTR;
 
 /*
  * Respond to smalltalk.
@@ -453,45 +459,64 @@ int chatbot_is_smalltalk(const char* intent) {
  *   0, if the chatbot should continue chatting
  *   1, if the chatbot should stop chatting (e.g. the smalltalk was "goodbye" etc.)
  */
+
+int search(char input[64], SMALLPTR head) {
+	SMALLTALKLIST* node;
+	int index = 0;
+	
+	node = head;
+	while (head != NULL && strcmp(head->input, input)!=0) {
+		index++;
+		head = head->next;
+	}
+	return (head != NULL) ? index : -1;
+}
+
 int chatbot_do_smalltalk(int inc, char* inv[], char* response, int n) {
 
-	/* to be implemented */
-	if (strcmp(inv[0], "hello") == 0)
-	{
-		snprintf(response, n, "Hello!!!");
-		return 0;
+	int index;
+	SMALLPTR head;
+	head = (SMALLPTR)calloc(3, sizeof(*head));
+	SMALLTALKLIST st1 = { "morning", {"Good Morning, have a great day ahead.","Morning! Good weather today!"} };
+	SMALLTALKLIST st2 = { "afternoon", {"Good Afternoon, remember to take a break once in awhile.", "Afternoon! What a great day!"} };
+	SMALLTALKLIST st3 = { "evening", {"Good Evening, great work today.", "Evening! Have a great night ahead!" } };
+	SMALLTALKLIST st4 = { "hello",{ "Hello!!!", "Hi mate!" } };
+	SMALLTALKLIST st5 = { "bye", {"Goodbye!", "Ciao!" } };
+	st1.next = &st2;
+	st2.next = &st3;
+	st3.next = &st4;
+	st4.next = &st5;
+	head = &st1;
+
+	if (strcmp(inv[0], "hi") == 0) {
+		inv[0] = "hello";
 	}
 
-	else if (strcmp(inv[0], "good") == 0)
-	{
-		if (strcmp(inv[1], "morning") == 0)
-		{
-			snprintf(response, n, "Good Morning, have a great day ahead.");
-			return 0;
+	if (strcmp(inv[0], "good") == 0) {
+		if (inv[1] == NULL) {
+			inv[0] = inv[0];
 		}
-		else if (strcmp(inv[1], "afternoon") == 0)
-		{
-			snprintf(response, n, "Good Afternoon, remember to take a break once in awhile.");
-			return 0;
-		}
-		else if (strcmp(inv[1], "evening") == 0)
-		{
-			snprintf(response, n, "Good Evening, great work today!");
-			return 0;
-		}
-		return 0;
+		else { inv[0] = inv[1]; }
 	}
 
-	else if (strcmp(inv[0], "goodbye"))
-	{
-		snprintf(response, n, "All right, see you then.");
-		return 1;
+	index = search(inv[0], head);
+	if (index >= 0) {
+		srand(time(NULL));
+		int random = rand() % 2;
+		for(int i=0; i<index;i++){
+			head = head->next;
+		}
+		if (strcmp(head->input, "bye") != 0) {
+			snprintf(response, n, "%s", head->response[random]);
+			return 0;
+		}
+		else {
+			snprintf(response, n, "%s", head->response[random]);
+			return 1;
+		}
 	}
-
-	else
-	{
+	else {
 		snprintf(response, n, "I don't understand \"%s\".", inv[0]);
-		return 1;
+		return 0;
 	}
-
 }
