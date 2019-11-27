@@ -164,13 +164,12 @@ KB_NODE* insertnode(KB_NODE* listhead, KB_NODE* newnode)
 
 	// check if theres a 2nd node
 	else if (listhead->next == NULL)
-	{
-		// if the entities are the same replace head response with new response
-		{
-			listhead->next = newnode;
-			newnode->next = NULL;
-			return listhead;
-		}
+	{		
+	
+		listhead->next = newnode;
+		newnode->next = NULL;
+		return listhead;
+		
 	}
 
 	// if there is a 2nd node
