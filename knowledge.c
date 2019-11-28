@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-//#include <dirent.h>
+ //#include <dirent.h>
 #include "chat1002.h"
 
 
@@ -36,7 +36,6 @@ KB_NODE* howListHead = NULL;
 
 
 
-
 KB_NODE* create(char* entity, char* response)
 {
 	//make a new node
@@ -52,7 +51,7 @@ KB_NODE* create(char* entity, char* response)
 	strcpy(new_node->entity, entity);
 	//sets the node to point to the next one in this case Null
 	strcpy(new_node->response, response);
-	
+
 	new_node->next = NULL;
 	return new_node;
 }
@@ -164,12 +163,12 @@ KB_NODE* insertnode(KB_NODE* listhead, KB_NODE* newnode)
 
 	// check if theres a 2nd node
 	else if (listhead->next == NULL)
-	{		
-	
+	{
+
 		listhead->next = newnode;
 		newnode->next = NULL;
 		return listhead;
-		
+
 	}
 
 	// if there is a 2nd node
@@ -225,7 +224,7 @@ int knowledge_get(const char* intent, const char* entity, char* response, int n)
 		else
 		{
 			//loop through what linked list
-			temp = findinlinkedlist(whoListHead, entity, n);			
+			temp = findinlinkedlist(whoListHead, entity, n);
 			//return KB_OK;
 		}
 	}
@@ -487,38 +486,39 @@ int knowledge_read(FILE* f) {
 			}
 			else { dict = 0; }
 		}
-		else if (dict != 0 && strchr(line, '=') != NULL) 
+		else if (dict != 0 && strchr(line, '=') != NULL)
 		{
 			/* seperate the entity and response from the line */
 			char* entity = strtok(line, "=");
 			char* response = strtok(NULL, "=");
 
 			//depending on dictionary it will put the LL_NODE in the linklist for the type of question
-			switch(dict)
+			switch (dict)
 			{
-				case 1:
-					whoListHead = append(whoListHead, entity, response);
-					break;
+			case 1:
+				whoListHead = append(whoListHead, entity, response);
+				break;
 
-				case 2:
-					whatListHead = append(whatListHead, entity, response);
-					break;
+			case 2:
+				whatListHead = append(whatListHead, entity, response);
+				break;
 
-				case 3:
-					whenListHead = append(whenListHead, entity, response);
-					break;
+			case 3:
+				whenListHead = append(whenListHead, entity, response);
+				break;
 
-				case 4:
-					whereListHead = append(whereListHead, entity, response);
-					break;
+			case 4:
+				whereListHead = append(whereListHead, entity, response);
+				break;
 
-				case 5:
-					whyListHead = append(whyListHead, entity, response);
-					break;
+			case 5:
+				whyListHead = append(whyListHead, entity, response);
+				break;
 
-				case 6:
-					howListHead = append(howListHead, entity, response);
-					break;
+			case 6:
+				howListHead = append(howListHead, entity, response);
+				break;
+
 			}
 
 
@@ -564,7 +564,7 @@ void knowledge_reset() {
 		free(whereListHead);
 		whereListHead = tmp;
 	}
-	
+
 	while (whyListHead != NULL)
 	{
 		tmp = whyListHead->next;
@@ -577,10 +577,7 @@ void knowledge_reset() {
 		free(howListHead);
 		howListHead = tmp;
 	}
-
 }
-
-
 /*
  * Write the knowledge base to a file.
  *
@@ -652,7 +649,5 @@ void knowledge_write(FILE* f) {
 		fprintf(f, "%s%c%s", entity, '=', response);
 		printed = printed->next;
 	}
-	
 
-	
 }
