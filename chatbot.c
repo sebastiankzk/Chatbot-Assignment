@@ -96,14 +96,12 @@ int chatbot_main(int inc, char* inv[], char* response, int n) {
 	/* look for an intent and invoke the corresponding do_* function */
 	if (chatbot_is_exit(inv[0]))
 		return chatbot_do_exit(inc, inv, response, n);
-	//	else if (chatbot_is_smalltalk(inv[0]))
-	//		return chatbot_do_smalltalk(inc, inv, response, n);
+//	else if (chatbot_is_smalltalk(inv[0]))
+//		return chatbot_do_smalltalk(inc, inv, response, n);
 	else if (chatbot_is_load(inv[0]))
 		return chatbot_do_load(inc, inv, response, n);
 	else if (chatbot_is_question(inv[0]))
 		return chatbot_do_question(inc, inv, response, n);
-	else if (chatbot_is_riddle(inv[0]))
-		return chatbot_do_riddle(inc, inv, response, n);
 	else if (chatbot_is_reset(inv[0]))
 		return chatbot_do_reset(inc, inv, response, n);
 	else if (chatbot_is_save(inv[0]))
@@ -181,15 +179,15 @@ int chatbot_is_load(const char* intent) {
  *   0 (the chatbot always continues chatting after loading knowledge)
  */
 int chatbot_do_load(int inc, char* inv[], char* response, int n) {
-
+	
 	/* First check whether user has entered a filename */
-	if (inv[1] == NULL)
+	if (inv[1] == NULL) 
 	{
 		snprintf(response, n, "Please enter a filename.");
 
 		return 0;
 	}
-	else
+	else 
 	{
 		/* Open file according to given file name, 2nd parameter of user input which is index 1 of inv */
 		FILE* fp = fopen(inv[1], "r");
@@ -203,7 +201,7 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
 
 			fclose(fp);
 		}
-		else
+		else 
 		{
 			snprintf(response, n, "File not found, does your filename exist?");
 		}
@@ -228,7 +226,7 @@ int chatbot_do_load(int inc, char* inv[], char* response, int n) {
 int chatbot_is_question(const char* intent) {
 
 	/* check for who, what, when, where, why, how, do_question will invoke if any of the compare_token returns 0 */
-	return
+	return 
 		compare_token(intent, "what") == 0 ||
 		compare_token(intent, "where") == 0 ||
 		compare_token(intent, "who") == 0 ||
@@ -237,6 +235,7 @@ int chatbot_is_question(const char* intent) {
 		compare_token(intent, "how") == 0;
 
 }
+
 
 /*
  * Answer a question.
@@ -284,7 +283,7 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 
 				/*Search for entity in the relevant knowledge list and return the answer*/
 				if (knowledge_get(inv[0], join_buffer, response, n) == KB_OK)
-				{
+				{					
 					return 0;
 				}
 				else if (knowledge_get(inv[0], join_buffer, response, n) == KB_NOTFOUND)
@@ -319,7 +318,7 @@ int chatbot_do_question(int inc, char* inv[], char* response, int n) {
 			{
 				snprintf(response, n, "Please ask a question in proper english.");
 			}
-
+			
 		}
 	}
 	else
@@ -421,111 +420,7 @@ int chatbot_do_save(int inc, char* inv[], char* response, int n) {
 	return 0;
 }
 
-/*________________________________________________________________________*/
-/*________________________________________________________________________*/
-/*________________________________________________________________________*/
-/*________________________________________________________________________*/
 
-/*
- * Determine which an intent is Riddles.
- */
-
-int chatbot_is_riddle(const char* intent) {
-	return (compare_token(intent, "riddle")) == 0;
-}
-
-
-struct riddleList {
-	int rinput;
-	char response[255];
-	char answer[255];
-	struct riddleList* next;
-}*rhead;
-typedef struct riddleList RiddleList;
-typedef RiddleList* RdlePtr;
-
-/*remove all blank spaces*/
-char* deblank(char* input)
-{
-	int i = 0;
-	int j = 0;
-	char* output = input;
-	for (i = 0, j = 0; i < strlen(input); i++, j++)
-	{
-		if (input[i] != ' ')
-			output[j] = input[i];
-		else
-			j--;
-	}
-	output[j] = 0;
-	return output;
-}
-/*Convert Character array to upper case*/
-char* stringUpr(char* s)
-{
-	int i = 0;
-	while (s[i] != '\0')
-	{
-		s[i++] = toupper((unsigned char)s[i]);
-	}
-	return s;
-}
-/*
- * Respond to Riddle.
- *
- * See the comment at the top of the file for a description of how this
- * function is used.
- *
- * Returns:
- *   0, if the chatbot should continue chatting
- *   1, if the chatbot should stop chatting (e.g. the smalltalk was "goodbye" etc.)
- */
-
-int chatbot_do_riddle(int inc, char* inv[], char* response, int n) {
-	int randomRiddleID;
-	char rqinput[255];
-	RdlePtr head;
-	head = (RdlePtr)calloc(4, sizeof(*rhead));
-	RiddleList rd1 = { 1, {"Who makes it, has no need of it.\nWho buys it, has no use for it.\nWho uses it can neither see nor feel it.\nWhat is it ? "},{"Coffin"} };
-	RiddleList rd2 = { 2, {"During which month do people sleep the least?"} ,{"February"} };
-	RiddleList rd3 = { 3, {"I'm tall when I'm young and I'm short when I'm old. What am I?"},{"Candle"} };
-	RiddleList rd4 = { 4, { "What has hands but can not clap?"},{"Clock"} };
-	RiddleList rd5 = { 5, {"What has a head and a tail, but no body?!"}, {"Coin"} };
-	int num = (rand() % 4) + 1;
-	rd1.next = &rd2;
-	rd2.next = &rd3;
-	rd3.next = &rd4;
-	rd4.next = &rd5;
-	head = &rd1;
-
-	while (head->rinput != num) {
-		head = head->next;
-	}
-	printf("%s: %s\n", chatbot_botname(), head->response);
-	printf("%s:", chatbot_username());
-	fgets(rqinput, 255, stdin);
-
-	char* answer = head->answer;
-	char* temp = answer;
-	//check if the user pressed enter instead of replying a answer
-	if (strcmp(rqinput, "") == 0 || strcmp(rqinput, " ") == 0 || strcmp(rqinput, " \n") == 0 || strcmp(rqinput, "\n") == 0)
-	{
-		snprintf(response, n, "Not even an attempt?! Pssh fine.. the answer is ..%s", head->answer);
-		return 0;
-	}
-	else
-	{
-		if (strcmp(stringUpr(deblank(answer)), stringUpr(deblank(rqinput))) == 0) {
-			snprintf(response, n, "You got that right! How about another?");
-		}
-		else {
-			snprintf(response, n, "Nice try.. But that's not the answer! The answer is ... %s", head->answer);
-		}
-	}
-
-
-	return 0;
-}
 /*
  * Determine which an intent is smalltalk.
  *
@@ -539,7 +434,7 @@ int chatbot_do_riddle(int inc, char* inv[], char* response, int n) {
  */
 
 int chatbot_is_smalltalk(const char* intent) {
-	/* to be implemented */
+	/* to be implemented */	
 	if (compare_token(intent, "reset") == 0 || compare_token(intent, "save") || compare_token(intent, "load") || compare_token(intent, "who")
 		|| compare_token(intent, "what") || compare_token(intent, "where"))
 		return 0;
@@ -569,9 +464,9 @@ typedef SMALLTALKLIST* SMALLPTR;
 int search(char input[64], SMALLPTR head) {
 	SMALLTALKLIST* node;
 	int index = 0;
-
+	
 	node = head;
-	while (head != NULL && strcmp(head->input, input) != 0) {
+	while (head != NULL && strcmp(head->input, input)!=0) {
 		index++;
 		head = head->next;
 	}
@@ -609,7 +504,7 @@ int chatbot_do_smalltalk(int inc, char* inv[], char* response, int n) {
 	if (index >= 0) {
 		srand(time(NULL));
 		int random = rand() % 2;
-		for (int i = 0; i < index; i++) {
+		for(int i=0; i<index;i++){
 			head = head->next;
 		}
 		if (strcmp(head->input, "bye") != 0) {
@@ -626,5 +521,3 @@ int chatbot_do_smalltalk(int inc, char* inv[], char* response, int n) {
 		return 0;
 	}
 }
-
-
